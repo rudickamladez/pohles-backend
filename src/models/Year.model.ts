@@ -1,5 +1,5 @@
 import { Model, ObjectID, Ref } from "@tsed/mongoose";
-import { CollectionOf, Property, ReadOnly, Required } from "@tsed/schema";
+import { Property, ReadOnly, Required } from "@tsed/schema";
 import { TimeModel } from "./Time.model";
 
 @Model({
@@ -16,7 +16,7 @@ export class YearModel {
 
   @Property()
   @Required()
-  @CollectionOf(TimeModel)
+  @Ref(TimeModel)
   times: TimeModel[];
 }
 
@@ -25,6 +25,6 @@ export class YearUpdateModel {
   name: string;
 
   @Property()
-  @CollectionOf(TimeModel)
+  @Ref(TimeModel)
   times: TimeModel[];
 }
