@@ -13,8 +13,7 @@ export class TicketModel {
   _id: string;
 
   @Property()
-  @Required()
-  @Enum(["paid", "unpaid", "cancelled"])
+  @Enum("paid", "unpaid", "cancelled")
   @Default("unpaid")
   status: string;
 
@@ -28,7 +27,7 @@ export class TicketModel {
   @Ref(YearModel)
   year: Ref<YearModel>;
 
-  // neco z year.times - YearTimeModel
+  // Team from YearModel.times
   @Property()
   @Required()
   @Ref(TimeModel)
@@ -38,4 +37,23 @@ export class TicketModel {
   @Format("date-time")
   @Default(Date.now)
   date: Date;
+}
+
+export class TicketUpdateModel {
+  @Property()
+  @Enum("paid", "unpaid", "cancelled")
+  status: string;
+
+  @Property()
+  @Ref(CustomerModel)
+  owner: Ref<CustomerModel>;
+
+  @Property()
+  @Ref(YearModel)
+  year: Ref<YearModel>;
+
+  // Team from YearModel.times
+  @Property()
+  @Ref(TimeModel)
+  time: Ref<TimeModel>;
 }
