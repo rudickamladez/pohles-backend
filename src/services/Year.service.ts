@@ -50,10 +50,7 @@ export class YearService {
         id: string,
         update: YearUpdateModel
     ) {
-        let obj = await this.model
-            .findById(id)
-            .populate("times")
-            .exec();
+        let obj = await this.model.findById(id);
 
         if (obj) {
             if (update.name) {
