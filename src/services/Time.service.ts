@@ -20,7 +20,7 @@ export class TimeService {
     }
 
     async getAll() {
-        return await this.model.find();
+        return await this.model.find().sort("name");
     }
 
     async findById(id: string) {
