@@ -1,7 +1,7 @@
 import { BodyParams, Controller, Delete, Get, Inject, Patch, PathParams, Post } from "@tsed/common";
 import { ContentType, Description, Returns, Summary } from "@tsed/schema";
 import { KeycloakAuth } from "src/decorators/KeycloakAuthOptions.decorator";
-import { TicketModel, TicketUpdateModel } from "src/models/Ticket.model";
+import { TicketEasyModel, TicketModel, TicketUpdateModel } from "src/models/Ticket.model";
 import { TicketService } from "src/services/Ticket.service";
 
 @Controller("/ticket")
@@ -17,6 +17,16 @@ export class TicketController {
   // @KeycloakAuth({ anyRole: ["realm:admin", "realm:ticket-editor"] })
   async createTicket(@BodyParams() ticket: TicketModel) {
     return await this.ticketService.save(ticket);
+  }
+
+  @ContentType("application/json")
+  @Post("/easy")
+  @Summary("Create new ticket easily")
+  @Description("Returns an new ticket from database.")
+  @Returns(200, TicketModel)
+  // @KeycloakAuth({ anyRole: ["realm:admin", "realm:ticket-editor"] })
+  async createTicketEasily(@BodyParams() ticket: TicketEasyModel) {
+    return await this.ticketService.saveEasy(ticket);
   }
 
   @ContentType("appliaction/json")

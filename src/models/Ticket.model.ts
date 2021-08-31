@@ -57,3 +57,13 @@ export class TicketUpdateModel {
   @Ref(TimeModel)
   time: Ref<TimeModel>;
 }
+
+export class TicketEasyModel {
+  @Property()
+  buyer: CustomerModel;
+
+  // Team from YearModel.times
+  @Property()
+  @Ref(TimeModel)
+  time: Ref<TimeModel>;
+}
