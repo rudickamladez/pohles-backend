@@ -17,3 +17,11 @@ export class TimeModel {
   @Required()
   maxCountOfTickets: number;
 }
+
+export class TimeUpdateModel {
+  @Property()
+  name: string;
+
+  @Property()
+  maxCountOfTickets: number;
+}
