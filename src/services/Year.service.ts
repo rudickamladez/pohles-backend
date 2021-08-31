@@ -13,9 +13,9 @@ export class YearService {
     }
 
     async save(obj: YearModel) {
-        const doc = new this.model(obj);
+        let doc = new this.model(obj);
         await doc.save()
-        doc
+        doc = await doc
             .populate("times")
             .execPopulate();
         this.wss.broadcast("new-year", doc);
