@@ -1,6 +1,7 @@
 import { BodyParams, Controller, Delete, Get, Inject, Patch, PathParams, Post } from "@tsed/common";
 import { ContentType, Description, Returns, Summary } from "@tsed/schema";
 import { KeycloakAuth } from "src/decorators/KeycloakAuthOptions.decorator";
+import { TimeModel } from "src/models/Time.model";
 import { YearModel, YearUpdateModel } from "src/models/Year.model";
 import { YearService } from "src/services/Year.service";
 
@@ -61,5 +62,14 @@ export class YearController {
     @BodyParams() update: YearUpdateModel
   ) {
     return await this.yearService.update(id, update);
+  }
+
+  @ContentType("application/json")
+  @Get("/active/times")
+  @Summary("Get active times")
+  @Description("Returns list of times from active year.")
+  @Returns(200, Array).Of(TimeModel)
+  async getActiveTimes() {
+    return this.yearService.activeTimes();
   }
 }
