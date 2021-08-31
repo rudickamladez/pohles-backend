@@ -1,4 +1,4 @@
-import { Model, ObjectID } from "@tsed/mongoose";
+import { Model, ObjectID, Unique } from "@tsed/mongoose";
 import { Property, ReadOnly, Required } from "@tsed/schema";
 import { CustomerNameSchema, CustomerNameUpdateSchema } from "./CustomerName.schema";
 
@@ -15,6 +15,7 @@ export class CustomerModel {
 
   @Property()
   @Required()
+  @Unique()
   email: string;
 }
 
