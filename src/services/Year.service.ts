@@ -57,6 +57,10 @@ export class YearService {
                 obj.name = update.name;
             }
 
+            if (update.status) {
+                obj.status = update.status;
+            }
+
             if (update.times) {
                 obj.times = update.times;
             }

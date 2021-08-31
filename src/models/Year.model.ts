@@ -1,5 +1,5 @@
 import { Model, ObjectID, Ref } from "@tsed/mongoose";
-import { Property, ReadOnly, Required } from "@tsed/schema";
+import { Default, Enum, Property, ReadOnly, Required } from "@tsed/schema";
 import { TimeModel } from "./Time.model";
 
 @Model({
@@ -15,6 +15,11 @@ export class YearModel {
   name: string;
 
   @Property()
+  @Enum("archived", "active", "prepared")
+  @Default("prepared")
+  status: string;
+
+  @Property()
   @Required()
   @Ref(TimeModel)
   times: TimeModel[];
@@ -23,6 +28,10 @@ export class YearModel {
 export class YearUpdateModel {
   @Property()
   name: string;
+
+  @Property()
+  @Enum("archived", "active", "prepared")
+  status: string;
 
   @Property()
   @Ref(TimeModel)
