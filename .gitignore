@@ -54,5 +54,5 @@ test/**/*.js.map
 
 # Docker
 /data
-docker-compose.yml
+# docker-compose.yml
 mongo-init.js
