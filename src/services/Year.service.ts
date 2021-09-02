@@ -86,4 +86,12 @@ export class YearService {
         return null;
     }
 
+    async activeYear() {
+        const doc = await this.model
+            .findOne({ status: 'active' })
+            .populate('times')
+            .exec();
+        return doc;
+    }
+
 }
