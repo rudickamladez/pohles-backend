@@ -13,7 +13,7 @@ export class TicketModel {
   _id: string;
 
   @Property()
-  @Enum("paid", "unpaid", "cancelled")
+  @Enum("paid", "unpaid", "cancelled", "confirmed")
   @Default("unpaid")
   status: string;
 
