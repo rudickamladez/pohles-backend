@@ -51,16 +51,20 @@ export class TicketService {
                 status: 'active',
                 times: [obj.time],
             })
-            await year.save();
+            year = await year.save();
+            year = await year
+                .populate("times")
+                .execPopulate();
         }
 
         /**
          * Check time, if is from active year.
          */
         let time = obj.time;
-        /* if (!(year.times.includes(obj.time))) {
+        // @ts-ignore
+        if (!(year.times.includes(obj.time))) {
             return null;
-        } */
+        }
 
         let doc = new this.model({
             owner: owner,
