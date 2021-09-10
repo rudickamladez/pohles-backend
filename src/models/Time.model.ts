@@ -25,3 +25,23 @@ export class TimeUpdateModel {
   @Property()
   maxCountOfTickets: number;
 }
+
+export class TimeForFrontendModel {
+  @Property()
+  _id: string;
+
+  @Property()
+  id: string;
+
+  @Property()
+  name: string;
+
+  @Property()
+  maxCountOfTickets: number;
+
+  @Property()
+  occupiedPositions: number;
+
+  @Property()
+  freePositions: number;
+}

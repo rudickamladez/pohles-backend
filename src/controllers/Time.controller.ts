@@ -1,7 +1,7 @@
 import { BodyParams, Controller, Delete, Get, Inject, Patch, PathParams, Post } from "@tsed/common";
-import { ContentType, Description, Returns, Summary } from "@tsed/schema";
+import { Any, ContentType, Description, Returns, Summary } from "@tsed/schema";
 import { KeycloakAuth } from "src/decorators/KeycloakAuthOptions.decorator";
-import { TimeModel, TimeUpdateModel } from "src/models/Time.model";
+import { TimeForFrontendModel, TimeModel, TimeUpdateModel } from "src/models/Time.model";
 import { TimeService } from "src/services/Time.service";
 
 @Controller("/time")
@@ -61,6 +61,15 @@ export class TimeController {
     @BodyParams() update: TimeUpdateModel
   ) {
     return await this.timeService.update(id, update);
+  }
+
+  @ContentType("application/json")
+  @Get("/available/:id")
+  @Summary("Get count of tickets available")
+  @Description("Returns time object with parameters.")
+  @Returns(200, TimeForFrontendModel)
+  async getAvailable(@PathParams("id") id: string) {
+    return await this.timeService.availableTicketsById(id);
   }
 
 }
