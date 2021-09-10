@@ -72,4 +72,13 @@ export class TimeController {
     return await this.timeService.availableTicketsById(id);
   }
 
+  @ContentType("application/json")
+  @Get("/active")
+  @Summary("Get active times")
+  @Description("Returns list of times from active year.")
+  @Returns(200, Array).Of(TimeForFrontendModel)
+  async getActiveTimes() {
+    return await this.timeService.activeTimes();
+  }
+
 }

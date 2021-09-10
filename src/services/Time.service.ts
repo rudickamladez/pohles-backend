@@ -82,4 +82,23 @@ export class TimeService {
         return res;
     }
 
+    async activeTimes() {
+        const activeYear = await this.yearService.activeYear();
+        const obj = await this.ticketModel.aggregate([
+            {
+                $match: {
+                    year: activeYear?._id,
+                    status: { $in: ['confirmed', 'paid'] },
+                }
+            }, {
+                $group: {
+                    _id: '$time',
+                    occupiedPositions: { $sum: 1 },
+                }
+            }
+        ]);
+        console.log(obj);
+        return obj;
+    }
+
 }
