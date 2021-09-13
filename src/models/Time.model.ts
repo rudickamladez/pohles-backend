@@ -44,4 +44,17 @@ export class TimeForFrontendModel {
 
   @Property()
   freePositions: number;
+
+  public constructor(id?: string, name?: string, maxCountOfTickets?: number, occupiedPositions?: number){
+    if(id)
+      this.id = id;
+    if(name)
+      this.name = name;
+    if(maxCountOfTickets)
+      this.maxCountOfTickets = maxCountOfTickets;
+    if(occupiedPositions){
+      this.occupiedPositions = occupiedPositions;
+      this.freePositions = this.maxCountOfTickets - this.occupiedPositions;
+    }
+  }
 }

@@ -82,4 +82,31 @@ export class TimeService {
         return res;
     }
 
+    async activeTimes() {
+        const activeYear = await this.yearService.activeYear();
+        //@ts-ignore
+        const res = await this.ticketModel.find({year: activeYear.id, status: { $in: ["confirmed", "paid"]}}).populate("time").exec();
+        let counter = new Map<string, TimeForFrontendModel>();
+        res.forEach(
+            (ticket) => {
+                //@ts-ignore
+                if(counter.has(ticket.time.id)){
+                    //@ts-ignore
+                    counter.get(ticket.time.id).occupiedPositions += 1;
+                }else{
+                    //@ts-ignore
+                    counter.set(ticket.time.id, new TimeForFrontendModel(ticket.time.id, ticket.time.name, ticket.time.maxCountOfTickets, 1));
+                }
+            }
+        );
+
+        let output: TimeForFrontendModel[] = [];
+        counter.forEach(
+            (key) => {
+                output.push(key);
+            }
+        );
+        return output;
+    }
+
 }
