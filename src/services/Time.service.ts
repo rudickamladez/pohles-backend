@@ -74,28 +74,44 @@ export class TimeService {
             status: { $in: ['confirmed', 'paid'] },
         });
 
-        let res = new TimeForFrontendModel();
-        res.id = time.id;
-        res.name = time.name;
-        res.maxCountOfTickets = time.maxCountOfTickets;
-        res.freePositions = time.maxCountOfTickets - countOfTickets;
+        const res = new TimeForFrontendModel(
+            time._id,
+            time.name,
+            time.maxCountOfTickets,
+            countOfTickets
+        );
         return res;
     }
 
     async activeTimes() {
         const activeYear = await this.yearService.active();
-        //@ts-ignore
-        const res = await this.ticketModel.find({ year: activeYear.id, status: { $in: ["confirmed", "paid"] } }).populate("time").exec();
         let counter = new Map<string, TimeForFrontendModel>();
+        activeYear?.times.forEach(
+            (time) => {
+                console.log(time._id);
+                if (!counter.has(time._id)) {
+                    counter.set(
+                        String(time._id),
+                        new TimeForFrontendModel(
+                            time._id,
+                            time.name,
+                            time.maxCountOfTickets
+                        ),
+                    );
+                }
+            }
+        );
+
+        const res = await this.ticketModel.find({ year: activeYear?.id, status: { $in: ["confirmed", "paid"] } }).populate("time").exec();
         res.forEach(
             (ticket) => {
                 //@ts-ignore
                 if (counter.has(ticket.time.id)) {
-                    //@ts-ignore
-                    counter.get(ticket.time.id).occupiedPositions += 1;
+                    // @ts-ignore
+                    counter.get(ticket.time.id).occupyThePositions();
                 } else {
                     //@ts-ignore
-                    counter.set(ticket.time.id, new TimeForFrontendModel(ticket.time.id, ticket.time.name, ticket.time.maxCountOfTickets, 1));
+                    counter.set(String(ticket.time.id), new TimeForFrontendModel(ticket.time.id, ticket.time.name, ticket.time.maxCountOfTickets, 1));
                 }
             }
         );
