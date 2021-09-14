@@ -75,18 +75,7 @@ export class YearService {
         return null;
     }
 
-    async activeTimes() {
-        const obj = await this.model
-            .findOne({ status: "active" })
-            .populate("times")
-            .exec();
-        if (obj) {
-            return obj.times;
-        }
-        return null;
-    }
-
-    async activeYear() {
+    async active() {
         const doc = await this.model
             .findOne({ status: 'active' })
             .populate('times')

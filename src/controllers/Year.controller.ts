@@ -30,6 +30,15 @@ export class YearController {
   }
 
   @ContentType("application/json")
+  @Get("/active")
+  @Summary("Get active year")
+  @Description("Returns a object of active year.")
+  @Returns(200, YearModel)
+  async getActiveYear() {
+    return this.yearService.active();
+  }
+
+  @ContentType("application/json")
   @Get("/:id")
   @Summary("Get one year by ID")
   @Description("Returns an year with given ID from database.")
@@ -64,12 +73,4 @@ export class YearController {
     return await this.yearService.update(id, update);
   }
 
-  @ContentType("application/json")
-  @Get("/active/times")
-  @Summary("Get active times")
-  @Description("Returns list of times from active year.")
-  @Returns(200, Array).Of(TimeModel)
-  async getActiveTimes() {
-    return this.yearService.activeTimes();
-  }
 }
