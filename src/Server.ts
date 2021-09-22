@@ -77,6 +77,9 @@ import compression from "compression";
     sslRequired: process.env.KEYCLOAK_SSL_REQUIRED || "external",
     resource: process.env.KEYCLOAK_CLIENT_ID || "backend",
     confidentialPort: process.env.KEYCLOAK_CONF_PORT || 0
+  },
+  nodeMailer: {
+    smtp: "ahoj"
   }
 })
 export class Server {
