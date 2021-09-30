@@ -78,8 +78,9 @@ import compression from "compression";
     resource: process.env.KEYCLOAK_CLIENT_ID || "backend",
     confidentialPort: process.env.KEYCLOAK_CONF_PORT || 0
   },
-  nodeMailer: {
-    smtp: "ahoj"
+  nodemailer: {
+    transport: process.env.NODEMAILER_TRANSPORT,
+    defaults: process.env.NODEMAILER_DEFAULTS,
   }
 })
 export class Server {

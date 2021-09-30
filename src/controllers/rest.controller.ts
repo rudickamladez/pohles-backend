@@ -3,15 +3,11 @@ import { ContentType, Description, Summary } from "@tsed/schema";
 import { SwaggerSettings } from "@tsed/swagger";
 import moment from "moment";
 import { KeycloakAuth } from "src/decorators/KeycloakAuthOptions.decorator";
-import { NodeMailerService } from "src/services/NodeMailer.service";
 
 @Controller("/")
 export class RestController {
   @Constant("swagger")
   swagger: SwaggerSettings[];
-
-  @Inject()
-  nodeMailerService: NodeMailerService;
 
   @ContentType('application/json')
   @Get("/")
@@ -29,10 +25,5 @@ export class RestController {
   @KeycloakAuth({ role: "realm:user" })
   protected() {
     return { "test": "ahoj" };
-  }
-
-  @Get("/smtp")
-  smtp(){
-    return this.nodeMailerService.getSmtp();
   }
 }
