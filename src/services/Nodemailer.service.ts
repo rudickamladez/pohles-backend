@@ -1,12 +1,14 @@
-import { Constant, Injectable } from "@tsed/di";
+import { Constant, Injectable, OnInit } from "@tsed/di";
 import { NodemailerConfig } from "./Nodemailer.config";
 import * as nodemailer from 'nodemailer';
 import SMTPTransport from "nodemailer/lib/smtp-transport";
 import Mail from "nodemailer/lib/mailer";
 import moment from "moment";
+import ejs from "ejs";
+import path from "path";
 
 @Injectable()
-export class NodemailerService {
+export class NodemailerService implements OnInit{
     @Constant("nodemailer")
     config: NodemailerConfig;
 
@@ -14,9 +16,8 @@ export class NodemailerService {
 
     private _testAccount: nodemailer.TestAccount;
 
-
-    constructor() {
-        if (!this.config?.transport) {
+    $onInit(){
+        if (!this.config.transport) {
             // Generate test SMTP service account from ethereal.email
             // Only needed if you don't have a real mail account for testing
             nodemailer.createTestAccount((err, testAccount) => {
@@ -73,14 +74,18 @@ export class NodemailerService {
         console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
     }
 
-    public async send(id: string, callback: Function) {
+    //this.nodeMailerService.sendAndParse("email@seznam.cz", "Testovací email", "test.ejs", {"text": "Hello, World!"});
+    public async sendAndParse(to: string, subject: string, fileName: string, data: object, options?: object){
+        this.sendHtml(to, subject, await this.parse(fileName, data, options));
+    }
+
+    public async sendHtml(to: string, subject: string, html: string) {
         // send mail with defined transport object
         let info = await this._transporter.sendMail({
             from: this.config.sender, // sender address
-            to: "matuska.lukas@lukasmatuska.cz", // list of receivers
-            subject: "Hello ✔", // Subject line
-            text: "Hello world?", // plain text body
-            html: "<b>Hello world?</b>", // html body
+            to: to, // list of receivers
+            subject: subject, // Subject line
+            html: html, // html body
         });
 
         console.log("Message sent: %s", info.messageId);
@@ -93,4 +98,8 @@ export class NodemailerService {
         this._transporter.sendMail(mailOptions);
     }*/
 
+
+    private parse(fileName: string, data: object, options?: object){
+        return ejs.renderFile(path.resolve(`src/templates/${fileName}`), data, options);
+    }
 }
