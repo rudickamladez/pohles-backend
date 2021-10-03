@@ -1,4 +1,5 @@
 import { Inject, Injectable } from "@tsed/di";
+import { BadRequest } from "@tsed/exceptions";
 import { MongooseModel } from "@tsed/mongoose";
 import { CustomerModel } from "src/models/Customer.model";
 import { TicketEasyModel, TicketModel, TicketUpdateModel } from "src/models/Ticket.model";
@@ -41,7 +42,6 @@ export class TicketService {
         } else {
             owner = await this.customerService.save(obj.buyer);
         }
-
 
         // Get active year
         let year = await this.yearModel.findOne({ status: 'active' });
