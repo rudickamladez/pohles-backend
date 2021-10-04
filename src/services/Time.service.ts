@@ -88,7 +88,7 @@ export class TimeService {
         let counter = new Map<string, TimeForFrontendModel>();
         activeYear?.times.forEach(
             (time) => {
-                console.log(time._id);
+                // console.log(time._id);
                 if (!counter.has(time._id)) {
                     counter.set(
                         String(time._id),
@@ -102,7 +102,7 @@ export class TimeService {
             }
         );
 
-        const res = await this.ticketModel.find({ year: activeYear?.id, status: { $in: ["confirmed", "paid"] } }).populate("time").exec();
+        const res = await this.ticketModel.find({ year: activeYear?.id, /* status: { $in: ["confirmed", "paid"] } */ }).populate("time").exec();
         res.forEach(
             (ticket) => {
                 //@ts-ignore
