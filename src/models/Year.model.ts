@@ -23,6 +23,10 @@ export class YearModel {
   @Required()
   @Ref(TimeModel)
   times: TimeModel[];
+
+  @Property()
+  @Required()
+  endOfReservations: Date;
 }
 
 export class YearUpdateModel {
@@ -36,4 +40,7 @@ export class YearUpdateModel {
   @Property()
   @Ref(TimeModel)
   times: TimeModel[];
+
+  @Property()
+  endOfReservations: Date;
 }

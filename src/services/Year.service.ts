@@ -65,6 +65,10 @@ export class YearService {
                 obj.times = update.times;
             }
 
+            if (update.endOfReservations) {
+                obj.endOfReservations = update.endOfReservations;
+            }
+
             obj.save();
             let res = await obj
                 .populate("times")
