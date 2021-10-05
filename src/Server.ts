@@ -81,6 +81,7 @@ import compression from "compression";
   nodemailer: {
     transport: process.env.NODEMAILER_TRANSPORT,
     defaults: process.env.NODEMAILER_DEFAULTS,
+    sender: process.env.NODEMAILER_SENDER,
   }
 })
 export class Server {

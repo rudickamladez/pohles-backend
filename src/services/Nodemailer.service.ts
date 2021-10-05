@@ -8,7 +8,7 @@ import ejs from "ejs";
 import path from "path";
 
 @Injectable()
-export class NodemailerService implements OnInit{
+export class NodemailerService implements OnInit {
     @Constant("nodemailer")
     config: NodemailerConfig;
 
@@ -16,7 +16,7 @@ export class NodemailerService implements OnInit{
 
     private _testAccount: nodemailer.TestAccount;
 
-    $onInit(){
+    $onInit() {
         if (!this.config.transport) {
             // Generate test SMTP service account from ethereal.email
             // Only needed if you don't have a real mail account for testing
@@ -75,31 +75,37 @@ export class NodemailerService implements OnInit{
     }
 
     //this.nodeMailerService.sendAndParse("email@seznam.cz", "Testovací email", "test.ejs", {"text": "Hello, World!"});
-    public async sendAndParse(to: string, subject: string, fileName: string, data: object, options?: object){
-        this.sendHtml(to, subject, await this.parse(fileName, data, options));
+    public async sendAndParse(to: string, subject: string, fileName: string, data: object, options?: object) {
+        this.sendHtmlAndText(
+            to,
+            subject,
+            await this.parse(`${fileName}.ejs`, data, options),
+            await this.parse(`${fileName}.txt`, data, options)
+        );
+    }
+
+    public async sendHtmlAndText(to: string, subject: string, html: string, text: string) {
+        let info = await this._transporter.sendMail({
+            from: this.config.sender,
+            to: to,
+            subject: subject,
+            text: text,
+            html: html,
+        });
+        console.log("Message sent: %s", info.messageId);
     }
 
     public async sendHtml(to: string, subject: string, html: string) {
-        // send mail with defined transport object
         let info = await this._transporter.sendMail({
-            from: this.config.sender, // sender address
-            to: to, // list of receivers
-            subject: subject, // Subject line
-            html: html, // html body
+            from: this.config.sender,
+            to: to,
+            subject: subject,
+            html: html,
         });
-
         console.log("Message sent: %s", info.messageId);
-
-        // Preview only available when sending through an Ethereal account
-        console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
     }
 
-    /*public send(mailOptions: Mail.Options) {
-        this._transporter.sendMail(mailOptions);
-    }*/
-
-
-    private parse(fileName: string, data: object, options?: object){
+    private parse(fileName: string, data: object, options?: object) {
         return ejs.renderFile(path.resolve(`src/templates/${fileName}`), data, options);
     }
 }
