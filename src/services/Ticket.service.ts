@@ -1,10 +1,13 @@
 import { Inject, Injectable } from "@tsed/di";
 import { BadRequest } from "@tsed/exceptions";
 import { MongooseModel } from "@tsed/mongoose";
+import moment from "moment";
 import { CustomerModel } from "src/models/Customer.model";
 import { TicketEasyModel, TicketModel, TicketUpdateModel } from "src/models/Ticket.model";
 import { YearModel } from "src/models/Year.model";
 import { CustomerService } from "./Customer.service";
+import { NodemailerService } from "./Nodemailer.service";
+import { TimeService } from "./Time.service";
 import { WebSocketService } from "./web-socket.service";
 
 @Injectable()
@@ -14,6 +17,8 @@ export class TicketService {
         @Inject(CustomerModel) private customerModel: MongooseModel<CustomerModel>,
         @Inject(CustomerService) private customerService: CustomerService,
         @Inject(YearModel) private yearModel: MongooseModel<YearModel>,
+        @Inject(TimeService) private timeService: TimeService,
+        @Inject(NodemailerService) private nodemailerService: NodemailerService,
         @Inject(WebSocketService) private wss: WebSocketService
     ) {
 
@@ -28,6 +33,7 @@ export class TicketService {
             .populate("time")
             .execPopulate();
         this.wss.broadcast("new-ticket", doc);
+        // this.nodemailerService.sendTestMail();
         return doc;
     }
 
@@ -35,7 +41,7 @@ export class TicketService {
         /**
          * Find buyer in database, if not found -> create document
          */
-        let customer = await this.customerModel.findOne({ email: obj.buyer.email });
+        let customer = await this.customerModel.findOne({ email: obj.buyer.email.trim() });
         let owner;
         if (customer) {
             owner = customer;
@@ -50,6 +56,7 @@ export class TicketService {
                 name: "Automatic Active Year",
                 status: 'active',
                 times: [obj.time],
+                endOfReservations: moment().add(14, 'days').calendar(),
             })
             year = await year.save();
             year = await year
@@ -58,17 +65,38 @@ export class TicketService {
         }
 
         /**
+         * Check if it's not endOfReservations
+         */
+        if (moment().diff(moment(year.endOfReservations)) < 0) {
+            throw new BadRequest("End of reservations.");
+        }
+
+        /**
          * Check time, if is from active year.
          */
-        let time = obj.time;
+        let timeId = obj.time;
         // @ts-ignore
-        if (!(year.times.includes(obj.time))) {
-            return null;
+        if (!(year.times.includes(timeId))) {
+            throw new BadRequest("Bad time.");
+        }
+
+        // @ts-ignore
+        let timeFromDB = await this.timeService.findById(timeId);
+        if (!timeFromDB) {
+            console.error("[Ticket.service.ts::saveEasy] Not found time for new ticket.");
+            throw new BadRequest("Not found time for new ticket.");
+        }
+
+        let countOfTicketsInSelectedTime = await this.model.countDocuments({ year: year._id, time: timeId });
+        // @ts-ignore
+        if (countOfTicketsInSelectedTime >= timeFromDB?.maxCountOfTickets) {
+            console.error("[Ticket.service.ts::saveEasy] Cannot create new ticket! Time is full.");
+            throw new BadRequest("Cannot create new ticket! Time is full.");
         }
 
         let doc = new this.model({
             owner: owner,
-            time: time,
+            time: timeId,
             year: year.id,
         });
         await doc.save();
@@ -78,6 +106,16 @@ export class TicketService {
             .populate("time")
             .execPopulate();
         this.wss.broadcast("new-ticket", doc);
+        await this.nodemailerService.sendAndParse(
+            // @ts-ignore
+            doc.owner.email,
+            "Nová rezervace",
+            "new-reservation",
+            {
+                "reservation": doc,
+            }
+        );
+        console.log(doc);
         return doc;
     }
 

@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Nová objednávka</title>
+</head>
+
+<body>
+    <p>Dobrý den,</p>
+    <p>zde je potvrzení Vaší rezervace:<br>
+        <br>
+        ID: <%= reservation._id %><br>
+            Křestní jméno: <%= reservation.owner.name.first %><br>
+                Příjmení: <%= reservation.owner.name.last %><br>
+                    Email: <%= reservation.owner.email %><br>
+                        Čas: <%= reservation.time.name %><br>
+    </p>
+    <br>
+    <p>Prosíme Vás, aby jste se dostavili nejpozději 20 minut před Vaším časem, nebo bude Vaše rezervace zrušena.<br>
+        S ohledem na vzniklou situaci kolem onemocnění Covid-19 Vás žádáme, abyste dodržovali aktuální vládní
+        nařízení.<br>
+        <br>
+        V rámci šetření naší planety Země, oceníme vlastní hrníček na teplý čajíček.<br>
+        <br>
+        Pokud budete mít jakékoliv připomínky k průběhu akce, zašlete nám prosím zpětnou vazbu jako odpověď na tento
+        email.<br>
+        <br>
+        S přáním hezkého dne,<br>
+        Pořadatelé Pohádkového lesa v Rudici
+    </p>
+</body>
+
+</html>
