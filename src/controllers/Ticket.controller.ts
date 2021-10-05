@@ -14,7 +14,7 @@ export class TicketController {
   @Summary("Create new ticket")
   @Description("Returns an new ticket from database.")
   @Returns(200, TicketModel)
-  // @KeycloakAuth({ anyRole: ["realm:admin", "realm:ticket-editor"] })
+  @KeycloakAuth({ anyRole: ["realm:admin", "realm:ticket-editor"] })
   async createTicket(@BodyParams() ticket: TicketModel) {
     return await this.ticketService.save(ticket);
   }
@@ -24,7 +24,7 @@ export class TicketController {
   @Summary("Create new ticket easily")
   @Description("Returns an new ticket from database.")
   @Returns(200, TicketModel)
-  // @KeycloakAuth({ anyRole: ["realm:admin", "realm:ticket-editor"] })
+  @KeycloakAuth({ anyRole: ["realm:admin", "realm:ticket-editor"] })
   async createTicketEasily(@BodyParams() ticket: TicketEasyModel) {
     return await this.ticketService.saveEasy(ticket);
   }
@@ -52,7 +52,7 @@ export class TicketController {
   @Summary("Delete one ticket by ID")
   @Description("Returns deleted ticket from database.")
   @Returns(200, TicketModel)
-  // @KeycloakAuth({ anyRole: ["realm:admin", "realm:ticket-editor"] })
+  @KeycloakAuth({ anyRole: ["realm:admin", "realm:ticket-editor"] })
   async deleteById(@PathParams("id") id: string) {
     return await this.ticketService.deleteById(id);
   }
@@ -62,7 +62,7 @@ export class TicketController {
   @Summary("Update one ticket by ID")
   @Description("Returns updated ticket from databse.")
   @Returns(200, TicketModel)
-  // @KeycloakAuth({ anyRole: ["realm:admin", "realm:ticket-editor"] })
+  @KeycloakAuth({ anyRole: ["realm:admin", "realm:ticket-editor"] })
   async patchById(
     @PathParams("id") id: string,
     @BodyParams() update: TicketUpdateModel

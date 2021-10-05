@@ -1,5 +1,6 @@
 import { BodyParams, Controller, Delete, Get, Inject, Patch, PathParams, Post } from "@tsed/common";
 import { ContentType, Description, Returns, Summary } from "@tsed/schema";
+import { KeycloakAuth } from "src/decorators/KeycloakAuthOptions.decorator";
 import { CustomerModel, CustomerUpdateModel } from "src/models/Customer.model";
 import { CustomerService } from "src/services/Customer.service";
 
@@ -13,7 +14,7 @@ export class CustomerController {
   @Summary("Create new customer")
   @Description("Returns an insterted customer from database.")
   @Returns(200, CustomerModel)
-  // @KeycloakAuth({ anyRole: ["realm:admin", "realm:customer-editor"] })
+  @KeycloakAuth({ anyRole: ["realm:admin", "realm:customer-editor"] })
   async createCustomer(@BodyParams() customer: CustomerModel) {
     return await this.customerService.save(customer);
   }
@@ -43,7 +44,7 @@ export class CustomerController {
   @Description("Returns deleted customer from database.")
   @Returns(200, CustomerModel)
   @Returns(404).Description("Not found")
-  // @KeycloakAuth({ anyRole: ["realm:admin", "realm:customer-editor"] })
+  @KeycloakAuth({ anyRole: ["realm:admin", "realm:customer-editor"] })
   async deleteById(@PathParams("id") id: string) {
     return await this.customerService.deleteById(id);
   }
@@ -54,7 +55,7 @@ export class CustomerController {
   @Description("Returns updated customer from database.")
   @Returns(200, CustomerModel)
   @Returns(404).Description("Not found")
-  // @KeycloakAuth({ anyRole: ["realm:admin", "realm:customer-editor"] })
+  @KeycloakAuth({ anyRole: ["realm:admin", "realm:customer-editor"] })
   async pathById(
     @PathParams("id") id: string,
     @BodyParams() update: CustomerUpdateModel

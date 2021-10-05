@@ -15,7 +15,7 @@ export class YearController {
   @Summary("Create new year")
   @Description("Returns an inserted year from databse.")
   @Returns(200, YearModel)
-  // @KeycloakAuth({ anyRole: ["realm:admin", "realm:year-editor"] })
+  @KeycloakAuth({ anyRole: ["realm:admin", "realm:year-editor"] })
   async createYear(@BodyParams() year: YearModel) {
     return await this.yearService.save(year);
   }
@@ -54,7 +54,7 @@ export class YearController {
   @Description("Returns deleted year from database.")
   @Returns(200, YearModel)
   @Returns(404).Description("Not found")
-  // @KeycloakAuth({ anyRole: ["realm:admin", "realm:year-editor"] })
+  @KeycloakAuth({ anyRole: ["realm:admin", "realm:year-editor"] })
   async deleteById(@PathParams("id") id: string) {
     return await this.yearService.deleteById(id);
   }
@@ -65,7 +65,7 @@ export class YearController {
   @Description("Returns updated year from database.")
   @Returns(200, YearModel)
   @Returns(404).Description("Not found")
-  // @KeycloakAuth({ anyRole: ["realm:admin", "realm:year-editor"] })
+  @KeycloakAuth({ anyRole: ["realm:admin", "realm:year-editor"] })
   async patchById(
     @PathParams("id") id: string,
     @BodyParams() update: YearUpdateModel

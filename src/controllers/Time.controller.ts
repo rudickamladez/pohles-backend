@@ -14,7 +14,7 @@ export class TimeController {
   @Summary("Create new time")
   @Description("Returns an inserted time from databse.")
   @Returns(200, TimeModel)
-  // @KeycloakAuth({ anyRole: ["realm:admin", "realm:time-editor"] })
+  @KeycloakAuth({ anyRole: ["realm:admin", "realm:time-editor"] })
   async createtime(@BodyParams() time: TimeModel) {
     return await this.timeService.save(time);
   }
@@ -53,7 +53,7 @@ export class TimeController {
   @Description("Returns deleted time from database.")
   @Returns(200, TimeModel)
   @Returns(404).Description("Not found")
-  // @KeycloakAuth({ anyRole: ["realm:admin", "realm:time-editor"] })
+  @KeycloakAuth({ anyRole: ["realm:admin", "realm:time-editor"] })
   async deleteById(@PathParams("id") id: string) {
     return await this.timeService.deleteById(id);
   }
@@ -64,7 +64,7 @@ export class TimeController {
   @Description("Returns updated time from database.")
   @Returns(200, TimeModel)
   @Returns(404).Description("Not found")
-  // @KeycloakAuth({ anyRole: ["realm:admin", "realm:time-editor"] })
+  @KeycloakAuth({ anyRole: ["realm:admin", "realm:time-editor"] })
   async patchById(
     @PathParams("id") id: string,
     @BodyParams() update: TimeUpdateModel
