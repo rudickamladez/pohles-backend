@@ -9,16 +9,9 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: examplepass
     volumes:
       - ./data/mongo:/data/db
-      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ${PWD}/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
   server:
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-      args:
-        - http_proxy
-        - https_proxy
-        - no_proxy
-    image: pohles-backend/server:latest
+    image: pohles-backend
     restart: always
     depends_on:
       - mongo
@@ -27,6 +20,10 @@ services:
     links:
       - mongo
     environment:
-      - MONGO_URL=mongodb://pohlesuser:examplepass@mongo:27017/pohles
+      MONGO_URL: mongodb://pohlesuser:examplepass@mongo:27017/pohles
+      NODEMAILER_TRANSPORT: '{"host": "", "port": 465, "secure": true, "auth": {"user": "user@user.net", "pass": "pass"}}'
     stdin_open: true  # -i
     tty: true         # -t
+
+
+    

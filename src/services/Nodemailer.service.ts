@@ -46,6 +46,7 @@ export class NodemailerService implements OnInit {
             );
             this.transporterVerify();
         }
+        console.log("After");
     }
 
     private transporterVerify() {
