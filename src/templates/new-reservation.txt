@@ -8,12 +8,12 @@ Příjmení: <%= reservation.owner.name.last %>
 Email: <%= reservation.owner.email %>
 Čas: <%= reservation.time.name %>
 
-Prosíme Vás, aby jste se dostavili nejpozději 20 minut před Vaším časem, nebo bude Vaše rezervace zrušena.
+Prosíme Vás, abyste se dostavili nejpozději 20 minut před Vaším časem, nebo bude Vaše rezervace zrušena.
 S ohledem na vzniklou situaci kolem onemocnění Covid-19 Vás žádáme, abyste dodržovali aktuální vládní nařízení.
 
 V rámci šetření naší planety Země, oceníme vlastní hrníček na teplý čajíček.
 
-Pokud budete mít jakékoliv připomínky k průběhu akce, zašlete nám prosím zpětnou vazbu jako odpověď na tento email.
+Pokud budete mít jakékoliv připomínky nebo dotazy k průběhu akce, zašlete nám prosím zpětnou vazbu jako odpověď na tento email.
 
 S přáním hezkého dne,
 Pořadatelé Pohádkového lesa v Rudici
