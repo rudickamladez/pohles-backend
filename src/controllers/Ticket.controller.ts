@@ -24,7 +24,6 @@ export class TicketController {
   @Summary("Create new ticket easily")
   @Description("Returns an new ticket from database.")
   @Returns(200, TicketModel)
-  @KeycloakAuth({ anyRole: ["realm:admin", "realm:ticket-editor"] })
   async createTicketEasily(@BodyParams() ticket: TicketEasyModel) {
     return await this.ticketService.saveEasy(ticket);
   }
