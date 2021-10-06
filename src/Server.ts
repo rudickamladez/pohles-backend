@@ -1,4 +1,4 @@
-import { Configuration, Inject } from "@tsed/di";
+import { Configuration, Constant, Inject, OnInit } from "@tsed/di";
 import { PlatformApplication } from "@tsed/common";
 import "@tsed/platform-express"; // /!\ keep this import
 import bodyParser from "body-parser";
@@ -12,6 +12,7 @@ import "@tsed/socketio";
 import session from "express-session";
 import cookieParser from "cookie-parser";
 import compression from "compression";
+import { NodemailerConfig } from "./services/Nodemailer.config";
 
 @Configuration({
   ...config,
@@ -66,7 +67,7 @@ import compression from "compression";
   mongoose: [{
     id: 'default',
     //@ts-ignore
-    url: process.env.MONGO_URL || "mongodb://pohles:pohles@localhost:27017/pohles",
+    url: process.env.MONGO_URL || "mongodb://pohlesuser:examplepass@mongo:27017/pohles",
     //@ts-ignore
     connectionOptions: process.env.MONGO_OPTIONS || '',
   }],
@@ -79,7 +80,7 @@ import compression from "compression";
     confidentialPort: process.env.KEYCLOAK_CONF_PORT || 0
   },
   nodemailer: {
-    transport: process.env.NODEMAILER_TRANSPORT,
+    transport: JSON.parse(process.env.NODEMAILER_TRANSPORT || "{}"),
     defaults: process.env.NODEMAILER_DEFAULTS,
     sender: process.env.NODEMAILER_SENDER,
   }
@@ -87,33 +88,36 @@ import compression from "compression";
 export class Server {
   @Inject()
   app: PlatformApplication;
-
+  
   @Inject()
   keycloakService: KeycloakService;
-
+  
   @Configuration()
   settings: Configuration;
-
+  
+  @Constant("nodemailer")
+  nodeMailerConfig: NodemailerConfig;
+  
   $beforeRoutesInit(): void {
     this.app
-      .use(cors())
-      .use(cookieParser())
-      .use(compression({}))
-      .use(methodOverride())
-      .use(bodyParser.json())
-      .use(bodyParser.urlencoded({
-        extended: true
-      }))
-      .use(session(
-        {
-          secret: "some-secret",
-          resave: false,
-          saveUninitialized: true,
-          store: this.keycloakService.getMemoryStore()
-        }
+    .use(cors())
+    .use(cookieParser())
+    .use(compression({}))
+    .use(methodOverride())
+    .use(bodyParser.json())
+    .use(bodyParser.urlencoded({
+      extended: true
+    }))
+    .use(session(
+      {
+        secret: "some-secret",
+        resave: false,
+        saveUninitialized: true,
+        store: this.keycloakService.getMemoryStore()
+      }
       ))
       .use(this.keycloakService.getKeycloakInstance().middleware());
+    }
   }
-}
 
 
