@@ -13,7 +13,6 @@ export class RestController {
   @Get("/")
   @Summary("Root route of the API")
   @Description("Return a message and time.")
-  @KeycloakAuth({ role: "realm:user" })
   get() {
     return {
       message: "hello world!",
