@@ -129,4 +129,22 @@ export class TimeService {
         });
     }
 
+    async activeTimesSum() {
+        const activeYear = await this.yearService.active();
+        let result = {
+            free: 0,
+            occupied: 0,
+            total: 0,
+        };
+        result.occupied = await this.ticketModel.countDocuments({ year: activeYear?.id, /* status: { $in: ["confirmed", "paid"] } */ }).exec();
+
+        await activeYear?.times.forEach(
+            (time) => {
+                result.total += time.maxCountOfTickets;
+            }
+        );
+        result.free = result.total - result.occupied;
+        return result;
+    }
+
 }

@@ -1,7 +1,7 @@
 import { BodyParams, Controller, Delete, Get, Inject, Patch, PathParams, Post } from "@tsed/common";
 import { Any, ContentType, Description, Returns, Summary } from "@tsed/schema";
 import { KeycloakAuth } from "src/decorators/KeycloakAuthOptions.decorator";
-import { TimeForFrontendModel, TimeModel, TimeUpdateModel } from "src/models/Time.model";
+import { TimeForFrontendModel, TimeModel, TimeSumModel, TimeUpdateModel } from "src/models/Time.model";
 import { TimeService } from "src/services/Time.service";
 
 @Controller("/time")
@@ -35,6 +35,15 @@ export class TimeController {
   @Returns(200, Array).Of(TimeForFrontendModel)
   async getActiveTimes() {
     return await this.timeService.activeTimes();
+  }
+
+  @ContentType("application/json")
+  @Get("/active/sum")
+  @Summary("Get active times sum")
+  @Description("Returns object with sum of free, occupied and total positions in times.")
+  @Returns(200, TimeSumModel)
+  async getActiveTimesSum() {
+    return await this.timeService.activeTimesSum();
   }
 
   @ContentType("application/json")

@@ -59,3 +59,14 @@ export class TimeForFrontendModel {
     return null;
   }
 }
+
+export class TimeSumModel {
+  @Property()
+  free: number;
+
+  @Property()
+  occupied: number;
+
+  @Property()
+  total: number
+}
