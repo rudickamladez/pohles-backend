@@ -67,7 +67,7 @@ export class TicketService {
         /**
          * Check if it's not endOfReservations
          */
-        if (moment().diff(moment(year.endOfReservations)) < 0) {
+        if (moment().diff(moment(year.endOfReservations)) > 0) {
             throw new BadRequest("End of reservations.");
         }
 
