@@ -40,9 +40,9 @@ import { NodemailerConfig } from "./services/Nodemailer.config";
               type: "oauth2",
               flows: {
                 authorizationCode: {
-                  authorizationUrl: process.env.SWAGGER_KEYCLOAK_AUTH_URL || "https://auth.rudickamladez.cz/auth/realms/pohles/protocol/openid-connect/auth",
-                  tokenUrl: process.env.SWAGGER_KEYCLOAK_TOKEN_URL || "https://auth.rudickamladez.cz/auth/realms/pohles/protocol/openid-connect/token",
-                  refreshUrl: process.env.SWAGGER_KEYCLOAK_TOKEN_URL || "https://auth.rudickamladez.cz/auth/realms/pohles/protocol/openid-connect/token",
+                  authorizationUrl: process.env.SWAGGER_KEYCLOAK_AUTH_URL || "https://auth.rudickamladez.cz/realms/pohles/protocol/openid-connect/auth",
+                  tokenUrl: process.env.SWAGGER_KEYCLOAK_TOKEN_URL || "https://auth.rudickamladez.cz/realms/pohles/protocol/openid-connect/token",
+                  refreshUrl: process.env.SWAGGER_KEYCLOAK_TOKEN_URL || "https://auth.rudickamladez.cz/realms/pohles/protocol/openid-connect/token",
                   scopes: { openid: "openid", profile: "profile" }
                 }
               }
@@ -74,7 +74,7 @@ import { NodemailerConfig } from "./services/Nodemailer.config";
   keycloak: {
     realm: process.env.KEYCLOAK_REALM || "pohles",
     bearerOnly: process.env.KEYCLOAK_BEARER_ONLY || true,
-    authServerUrl: process.env.KEYCLOAK_URL || "https://auth.rudickamladez.cz/auth/",
+    authServerUrl: process.env.KEYCLOAK_URL || "https://auth.rudickamladez.cz/",
     sslRequired: process.env.KEYCLOAK_SSL_REQUIRED || "external",
     resource: process.env.KEYCLOAK_CLIENT_ID || "backend",
     confidentialPort: process.env.KEYCLOAK_CONF_PORT || 0
