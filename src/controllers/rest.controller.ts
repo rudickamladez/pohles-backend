@@ -21,6 +21,8 @@ export class RestController {
   }
 
   @Get("/protected")
+  @Summary("Protected route of the API")
+  @Description("Return a greeting when user is authenticated.")
   @KeycloakAuth({ role: "realm:user" })
   protected() {
     return { "test": "ahoj" };
