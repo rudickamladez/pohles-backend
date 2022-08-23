@@ -10,17 +10,17 @@
     "start:prod": "cross-env NODE_ENV=production ts-node -r tsconfig-paths/register dist/index.js"
   },
   "dependencies": {
-    "@tsed/ajv": "^6.128.2",
-    "@tsed/common": "^6.128.2",
-    "@tsed/core": "^6.128.2",
-    "@tsed/di": "^6.128.2",
-    "@tsed/exceptions": "^6.128.2",
-    "@tsed/json-mapper": "^6.128.2",
-    "@tsed/mongoose": "^6.128.2",
-    "@tsed/platform-express": "^6.128.2",
-    "@tsed/schema": "^6.128.2",
-    "@tsed/socketio": "^6.128.2",
-    "@tsed/swagger": "^6.128.2",
+    "@tsed/ajv": "7.0.0-rc.3",
+    "@tsed/common": "7.0.0-rc.3",
+    "@tsed/core": "7.0.0-rc.3",
+    "@tsed/di": "7.0.0-rc.3",
+    "@tsed/exceptions": "7.0.0-rc.3",
+    "@tsed/json-mapper": "7.0.0-rc.3",
+    "@tsed/mongoose": "7.0.0-rc.3",
+    "@tsed/platform-express": "7.0.0-rc.3",
+    "@tsed/schema": "7.0.0-rc.3",
+    "@tsed/socketio": "7.0.0-rc.3",
+    "@tsed/swagger": "7.0.0-rc.3",
     "@types/compression": "^1.7.2",
     "@types/cookie-parser": "^1.4.3",
     "@types/express-session": "^1.17.5",
@@ -36,7 +36,7 @@
     "ejs": "^3.1.8",
     "express": "^4.18.1",
     "express-session": "^1.17.3",
-    "keycloak-connect": "^14.0.0",
+    "keycloak-connect": "^19.0.1",
     "method-override": "^3.0.0",
     "moment": "^2.29.4",
     "mongoose": "^6.5.2",
@@ -46,7 +46,7 @@
   },
   "devDependencies": {
     "@tsed/cli-plugin-mongoose": "3.24.0",
-    "@tsed/testing-mongoose": "^6.128.2",
+    "@tsed/testing-mongoose": "7.0.0-rc.3",
     "@types/ejs": "^3.1.1",
     "@types/multer": "^1.4.7",
     "ts-node-dev": "^1.1.8",
@@ -54,6 +54,7 @@
   },
   "tsed": {
     "packageManager": "npm",
-    "convention": "default"
+    "convention": "default",
+    "architecture": "default"
   }
 }

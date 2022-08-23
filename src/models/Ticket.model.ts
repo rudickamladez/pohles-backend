@@ -1,5 +1,5 @@
 import { Model, ObjectID, Ref } from "@tsed/mongoose";
-import { Default, Enum, Format, Property, ReadOnly, Required } from "@tsed/schema";
+import { Default, Enum, Format, Property, Required } from "@tsed/schema";
 import { CustomerModel } from "./Customer.model";
 import { TimeModel } from "./Time.model";
 import { YearModel } from "./Year.model";
@@ -8,7 +8,6 @@ import { YearModel } from "./Year.model";
   name: "tickets"
 })
 export class TicketModel {
-  @ReadOnly()
   @ObjectID("id")
   _id: string;
 
