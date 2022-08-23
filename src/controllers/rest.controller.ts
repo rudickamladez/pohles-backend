@@ -13,6 +13,7 @@ export class RestController {
   @Get("/")
   @Summary("Root route of the API")
   @Description("Return a message and time.")
+  @Returns(200, Object)
   get() {
     return {
       message: "hello world!",
@@ -23,6 +24,7 @@ export class RestController {
   @Get("/protected")
   @Summary("Protected route of the API")
   @Description("Return a greeting when user is authenticated.")
+  @Returns(200, Object)
   @KeycloakAuth({ role: "realm:user" })
   protected() {
     return { "test": "ahoj" };
