@@ -1,5 +1,5 @@
 import { Inject, Constant, Controller, Get } from "@tsed/common";
-import { ContentType, Description, Summary } from "@tsed/schema";
+import { ContentType, Description, Returns, Summary } from "@tsed/schema";
 import { SwaggerSettings } from "@tsed/swagger";
 import moment from "moment";
 import { KeycloakAuth } from "src/decorators/KeycloakAuthOptions.decorator";
