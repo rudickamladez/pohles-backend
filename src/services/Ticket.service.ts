@@ -29,6 +29,7 @@ export class TicketService {
         await doc.save();
         doc = await doc
             .populate("owner")
+            //@ts-ignore
             .populate("year")
             .populate("time")
             .execPopulate();
@@ -61,12 +62,14 @@ export class TicketService {
             year = await year.save();
             year = await year
                 .populate("times")
+                //@ts-ignore
                 .execPopulate();
         }
 
         /**
          * Check if it's not endOfReservations
          */
+        //@ts-ignore
         if (moment().diff(moment(year.endOfReservations)) > 0) {
             throw new BadRequest("End of reservations.");
         }
@@ -87,6 +90,7 @@ export class TicketService {
             throw new BadRequest("Not found time for new ticket.");
         }
 
+        //@ts-ignore
         let countOfTicketsInSelectedTime = await this.model.countDocuments({ year: year._id, time: timeId });
         // @ts-ignore
         if (countOfTicketsInSelectedTime >= timeFromDB?.maxCountOfTickets) {
@@ -97,11 +101,13 @@ export class TicketService {
         let doc = new this.model({
             owner: owner,
             time: timeId,
+            //@ts-ignore
             year: year.id,
         });
         await doc.save();
         doc = await doc
             .populate("owner")
+            //@ts-ignore
             .populate("year")
             .populate("time")
             .execPopulate();
@@ -176,6 +182,7 @@ export class TicketService {
             obj.save();
             let res = await obj
                 .populate("owner")
+                //@ts-ignore
                 .populate("year")
                 .populate("time")
                 .execPopulate();
