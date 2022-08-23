@@ -1,12 +1,11 @@
-import { Context, IMiddleware, Inject, Middleware } from '@tsed/common';
+import { Context, Inject, Middleware, MiddlewareMethods } from '@tsed/common';
 import { Request, Response } from 'express';
 import { Token } from 'keycloak-connect';
-import { EvalAwarePartialHost } from 'ts-node/dist/repl';
 import { KeycloakAuthOptions } from '../decorators/KeycloakAuthOptions.decorator';
 import { KeycloakService } from '../services/Keycloak.service';
 
 @Middleware()
-export class KeycloakMiddleware implements IMiddleware {
+export class KeycloakMiddleware implements MiddlewareMethods {
 
   @Inject()
   keycloakService: KeycloakService;

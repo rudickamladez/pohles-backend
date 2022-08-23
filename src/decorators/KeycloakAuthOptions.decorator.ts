@@ -1,10 +1,10 @@
 import { Returns } from '@tsed/schema';
-import { IAuthOptions, UseAuth } from '@tsed/common';
+import { UseAuth } from '@tsed/common';
 import { useDecorators } from '@tsed/core';
 import { Security } from '@tsed/schema';
 import { KeycloakMiddleware } from '../middlewares/Keycloak.middleware';
 
-export interface KeycloakAuthOptions extends IAuthOptions {
+export interface KeycloakAuthOptions extends Record<string, unknown> {
   role?: string;
   anyRole?: string[];
   scopes?: string[];
