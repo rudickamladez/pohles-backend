@@ -28,12 +28,9 @@ export class TicketService {
         let doc = new this.model(obj);
         await doc.save();
         doc = await doc
-            .populate("owner")
-            //@ts-ignore
-            .populate("year")
-            .populate("time")
-            .execPopulate();
+            .populate(["owner", "year", "time"])
         this.wss.broadcast("new-ticket", doc);
+
         // this.nodemailerService.sendTestMail();
         return doc;
     }
@@ -106,11 +103,7 @@ export class TicketService {
         });
         await doc.save();
         doc = await doc
-            .populate("owner")
-            //@ts-ignore
-            .populate("year")
-            .populate("time")
-            .execPopulate();
+            .populate(["owner", "year", "time"])
         this.wss.broadcast("new-ticket", doc);
         await this.nodemailerService.sendAndParse(
             // @ts-ignore
@@ -181,11 +174,7 @@ export class TicketService {
 
             obj.save();
             let res = await obj
-                .populate("owner")
-                //@ts-ignore
-                .populate("year")
-                .populate("time")
-                .execPopulate();
+                .populate(["owner", "year", "time"])
             this.wss.broadcast("update-ticket", res);
             return res;
         }
