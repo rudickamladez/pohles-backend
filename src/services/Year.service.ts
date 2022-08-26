@@ -17,8 +17,6 @@ export class YearService {
         await doc.save()
         doc = await doc
             .populate("times")
-            //@ts-ignore
-            .execPopulate();
         this.wss.broadcast("new-year", doc);
         return doc;
     }
@@ -73,8 +71,6 @@ export class YearService {
             obj.save();
             let res = await obj
                 .populate("times")
-                //@ts-ignore
-                .execPopulate()
             this.wss.broadcast("update-year", res);
             return res;
         }
