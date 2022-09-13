@@ -44,7 +44,10 @@ export class TicketService {
         if (customer) {
             owner = customer;
         } else {
-            owner = await this.customerService.save(obj.buyer);
+            let buyer = Object(obj.buyer);
+            buyer.names = [obj.buyer.name];
+            buyer.name = null;
+            owner = await this.customerService.save(buyer);
         }
 
         // Get active year
@@ -58,9 +61,9 @@ export class TicketService {
             })
             year = await year.save();
             year = await year
-                .populate("times")
+                .populate(["times"])
                 //@ts-ignore
-                .execPopulate();
+                // .execPopulate();
         }
 
         /**

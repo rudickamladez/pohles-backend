@@ -10,7 +10,7 @@ export class CustomerModel {
   _id: string;
 
   @Property()
-  name: CustomerNameSchema;
+  names: CustomerNameSchema[];
 
   @Property()
   @Required()
@@ -19,6 +19,17 @@ export class CustomerModel {
 }
 
 export class CustomerUpdateModel {
-  name?: CustomerNameUpdateSchema;
+  names?: CustomerNameUpdateSchema[];
   email?: string;
+}
+
+export class CustomerEasyTicketModel {
+  
+  @Property()
+  name: CustomerNameSchema;
+
+  @Property()
+  @Required()
+  @Unique()
+  email: string;
 }
