@@ -42,7 +42,13 @@ export class TicketService {
         let customer = await this.customerModel.findOne({ email: obj.buyer.email.trim() });
         let owner;
         if (customer) {
-            owner = customer;
+            const foundName = customer.names.some(name => {
+                return (name.first == obj.buyer.name.first) && (name.last == obj.buyer.name.last);
+            })
+            if (!foundName) {
+                customer.names.push(obj.buyer.name);
+                owner = await this.customerService.update(customer.id, customer);
+	    }
         } else {
             let buyer = new CustomerModel();
             buyer.names = [obj.buyer.name];
