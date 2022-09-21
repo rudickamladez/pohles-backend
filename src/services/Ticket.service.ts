@@ -44,9 +44,9 @@ export class TicketService {
         if (customer) {
             owner = customer;
         } else {
-            let buyer = Object(obj.buyer);
+            let buyer = new CustomerModel();
             buyer.names = [obj.buyer.name];
-            buyer.name = null;
+            buyer.email = obj.buyer.email;
             owner = await this.customerService.save(buyer);
         }
 
