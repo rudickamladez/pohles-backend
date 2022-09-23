@@ -48,7 +48,9 @@ export class TicketService {
             if (!foundName) {
                 customer.names.push(obj.buyer.name);
                 owner = await this.customerService.update(customer.id, customer);
-	    }
+            } else {
+                owner = customer;
+            }
         } else {
             let buyer = new CustomerModel();
             buyer.names = [obj.buyer.name];
