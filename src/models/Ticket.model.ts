@@ -1,6 +1,6 @@
 import { Model, ObjectID, Ref } from "@tsed/mongoose";
 import { Default, Enum, Format, Property, Required } from "@tsed/schema";
-import { CustomerModel } from "./Customer.model";
+import { CustomerEasyTicketModel, CustomerModel } from "./Customer.model";
 import { TimeModel } from "./Time.model";
 import { YearModel } from "./Year.model";
 
@@ -59,7 +59,7 @@ export class TicketUpdateModel {
 
 export class TicketEasyModel {
   @Property()
-  buyer: CustomerModel;
+  buyer: CustomerEasyTicketModel;
 
   // Team from YearModel.times
   @Property()

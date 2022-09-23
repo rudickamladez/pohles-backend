@@ -42,14 +42,8 @@ export class CustomerService {
             .exec();
 
         if (obj) {
-            if (update.name) {
-                if (update.name.first) {
-                    obj.name.first = update.name.first;
-                }
-
-                if (update.name.last) {
-                    obj.name.last = update.name.last;
-                }
+            if (update.names) {
+                obj.names = update.names;
             }
 
             if (update.email) {

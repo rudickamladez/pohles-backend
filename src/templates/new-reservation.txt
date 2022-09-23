@@ -3,8 +3,8 @@ Dobrý den,
 zde je potvrzení Vaší rezervace:
 
 ID: <%= reservation._id %>
-Křestní jméno: <%= reservation.owner.name.first %>
-Příjmení: <%= reservation.owner.name.last %>
+Křestní jméno: <%= reservation.owner.names[reservation.owner.names.length-1].first %>
+Příjmení: <%= reservation.owner.names[reservation.owner.names.length-1].last %>
 Email: <%= reservation.owner.email %>
 Čas: <%= reservation.time.name %>
 
