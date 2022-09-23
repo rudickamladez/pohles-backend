@@ -2,7 +2,7 @@ import { Constant, Injectable, OnInit } from "@tsed/di";
 import { NodemailerConfig } from "./Nodemailer.config";
 import * as nodemailer from 'nodemailer';
 import SMTPTransport from "nodemailer/lib/smtp-transport";
-import Mail from "nodemailer/lib/mailer";
+import Mail, { Attachment } from "nodemailer/lib/mailer";
 import moment from "moment";
 import ejs from "ejs";
 import path from "path";
@@ -76,12 +76,13 @@ export class NodemailerService implements OnInit {
     }
 
     //this.nodeMailerService.sendAndParse("email@seznam.cz", "Testovací email", "test.ejs", {"text": "Hello, World!"});
-    public async sendAndParse(to: string, subject: string, fileName: string, data: object, options?: object) {
-        this.sendHtmlAndText(
+    public async sendAndParse(to: string, subject: string, fileName: string, data: object, attachments: Attachment[], ejsOptions?: object, ) {
+        this.sendHtmlAndTextWithAttachments(
             to,
             subject,
-            await this.parse(`${fileName}.ejs`, data, options),
-            await this.parse(`${fileName}.txt`, data, options)
+            await this.parse(`${fileName}.ejs`, data, ejsOptions),
+            await this.parse(`${fileName}.txt`, data, ejsOptions),
+            attachments,
         );
     }
 
@@ -92,6 +93,18 @@ export class NodemailerService implements OnInit {
             subject: subject,
             text: text,
             html: html,
+        });
+        console.log("Message sent: %s", info.messageId);
+    }
+
+    public async sendHtmlAndTextWithAttachments(to: string, subject: string, html: string, text: string, attachments: Attachment[]) {
+        let info = await this._transporter.sendMail({
+            from: this.config.sender,
+            to: to,
+            subject: subject,
+            text: text,
+            html: html,
+            attachments,
         });
         console.log("Message sent: %s", info.messageId);
     }

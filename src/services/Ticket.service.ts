@@ -2,6 +2,7 @@ import { Inject, Injectable } from "@tsed/di";
 import { BadRequest } from "@tsed/exceptions";
 import { MongooseModel } from "@tsed/mongoose";
 import moment from "moment";
+import { QRCode, QRSvg } from 'sexy-qr';
 import { CustomerModel } from "src/models/Customer.model";
 import { TicketEasyModel, TicketModel, TicketUpdateModel } from "src/models/Ticket.model";
 import { YearModel } from "src/models/Year.model";
@@ -33,6 +34,26 @@ export class TicketService {
 
         // this.nodemailerService.sendTestMail();
         return doc;
+    }
+
+    private svgGenerate (obj: TicketModel) {
+        const qrCode = new QRCode({
+            content: `https://api.pohles.rudickamladez.cz/ticket/${obj._id}/`,
+            ecl: 'M', // 'L' | 'M' | 'Q' | 'H'
+          });
+        
+          const qrSvg = new QRSvg(qrCode, {
+            fill: '#182026',
+            cornerBlocksAsCircles: false,
+            size: 300, // px
+            radiusFactor: 0.75, // 0-1
+            cornerBlockRadiusFactor: 2, // 0-3
+            roundInnerCorners: true,
+            roundOuterCorners: true,
+            preContent: '<!-- QR Code -->',
+          });
+        
+          return qrSvg.svg;
     }
 
     async saveEasy(obj: TicketEasyModel) {
@@ -114,6 +135,7 @@ export class TicketService {
         doc = await doc
             .populate(["owner", "year", "time"])
         this.wss.broadcast("new-ticket", doc);
+        const svgCode = this.svgGenerate(doc);
         await this.nodemailerService.sendAndParse(
             // @ts-ignore
             doc.owner.email,
@@ -121,7 +143,14 @@ export class TicketService {
             "new-reservation",
             {
                 "reservation": doc,
-            }
+            },
+            [
+                {
+                    filename: 'reservation-qrcode.svg',
+                    cid: 'reservation-qrcode.svg',
+                    content: svgCode
+                }
+            ]
         );
         console.log(doc);
         return doc;
