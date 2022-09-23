@@ -2,6 +2,7 @@ import { Inject, Injectable } from "@tsed/di";
 import { BadRequest } from "@tsed/exceptions";
 import { MongooseModel } from "@tsed/mongoose";
 import moment from "moment";
+import { QRCode, QRSvg } from 'sexy-qr';
 import { CustomerModel } from "src/models/Customer.model";
 import { TicketEasyModel, TicketModel, TicketUpdateModel } from "src/models/Ticket.model";
 import { YearModel } from "src/models/Year.model";
@@ -114,6 +115,30 @@ export class TicketService {
         doc = await doc
             .populate(["owner", "year", "time"])
         this.wss.broadcast("new-ticket", doc);
+        const svgCode = (() => {
+            const qrCode = new QRCode({
+              content: "https://api.pohles.rudickamladez.cz/ticket",
+            //   content: `https://api.pohles.rudickamladez.cz/ticket/${doc.id}/`,
+            //   content: 'https://avin.github.io/sexy-qr',
+              ecl: 'M', // 'L' | 'M' | 'Q' | 'H'
+            });
+          
+            const qrSvg = new QRSvg(qrCode, {
+              fill: '#182026',
+              cornerBlocksAsCircles: false,
+              size: 380, // px
+              radiusFactor: 0.75, // 0-1
+              cornerBlockRadiusFactor: 2, // 0-3
+            //   roundInnerCorners: true,
+              roundInnerCorners: false,
+            //   roundOuterCorners: true,
+              roundOuterCorners: false,
+            //   preContent: '<!-- QR Code -->',
+            });
+          
+            return qrSvg.svg;
+        })();
+        console.log(svgCode);
         await this.nodemailerService.sendAndParse(
             // @ts-ignore
             doc.owner.email,
@@ -121,6 +146,7 @@ export class TicketService {
             "new-reservation",
             {
                 "reservation": doc,
+                "qrsvg": svgCode,
             }
         );
         console.log(doc);
