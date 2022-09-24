@@ -13,6 +13,7 @@ import { CustomerService } from "./Customer.service";
 import { NodemailerService } from "./Nodemailer.service";
 import { TimeService } from "./Time.service";
 import { WebSocketService } from "./web-socket.service";
+const API_ENDPOINT = process.env["API_ENDPOINT"];
 
 @Injectable()
 export class TicketService {
@@ -41,7 +42,7 @@ export class TicketService {
 
     private svgGenerate (obj: TicketModel) {
         const qrCode = new QRCode({
-            content: `https://api.pohles.rudickamladez.cz/ticket/${obj._id}/`,
+            content: `${API_ENDPOINT}/ticket/${obj._id}/`,
             ecl: 'M', // 'L' | 'M' | 'Q' | 'H'
           });
         
