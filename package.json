@@ -26,6 +26,8 @@
     "@types/express-session": "^1.17.5",
     "@types/method-override": "^0.0.32",
     "@types/nodemailer": "^6.4.5",
+    "@types/pdfkit": "^0.12.6",
+    "@types/svg-to-pdfkit": "^0.1.0",
     "ajv": "^8.11.0",
     "body-parser": "^1.20.0",
     "compression": "^1.7.4",
@@ -41,8 +43,10 @@
     "moment": "^2.29.4",
     "mongoose": "^6.5.2",
     "nodemailer": "^6.7.8",
+    "pdfkit": "^0.13.0",
     "sexy-qr": "^0.3.2",
     "socket.io": "^4.5.1",
+    "svg-to-pdfkit": "^0.1.8",
     "ts-node": "^10.9.1"
   },
   "devDependencies": {

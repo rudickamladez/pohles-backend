@@ -3,6 +3,9 @@ import { BadRequest } from "@tsed/exceptions";
 import { MongooseModel } from "@tsed/mongoose";
 import moment from "moment";
 import { QRCode, QRSvg } from 'sexy-qr';
+import PDFDocument from 'pdfkit';
+import SVGtoPDF from 'svg-to-pdfkit';
+import * as fs from 'fs';
 import { CustomerModel } from "src/models/Customer.model";
 import { TicketEasyModel, TicketModel, TicketUpdateModel } from "src/models/Ticket.model";
 import { YearModel } from "src/models/Year.model";
@@ -54,6 +57,24 @@ export class TicketService {
           });
         
           return qrSvg.svg;
+    }
+
+    pdf(obj: TicketModel) {
+
+        // Create a document
+        const doc = new PDFDocument();
+        doc.pipe(fs.createWriteStream(`/tmp/qr-${obj._id}.pdf`));
+        const svg = this.svgGenerate(obj);
+        SVGtoPDF(doc, svg, 50, 50, {});
+
+        // Embed a font, set the font size, and render some text
+        doc
+            // .font('fonts/PalatinoBold.ttf')
+            .fontSize(25)
+            .text(obj._id, 50, 300);
+
+        doc.end();
+        return;
     }
 
     async saveEasy(obj: TicketEasyModel) {
@@ -138,6 +159,7 @@ export class TicketService {
             .populate(["owner", "year", "time"])
         this.wss.broadcast("new-ticket", doc);
         const svgCode = this.svgGenerate(doc);
+        this.pdf(doc);
         await this.nodemailerService.sendAndParse(
             // @ts-ignore
             doc.owner.email,
@@ -148,9 +170,13 @@ export class TicketService {
             },
             [
                 {
-                    filename: 'reservation-qrcode.svg',
+                    filename: `pohles-reservation-qrcode-${doc._id}.svg`,
                     cid: 'reservation-qrcode.svg',
                     content: svgCode
+                },
+                {
+                    filename: `pohles-reservation-${doc._id}.pdf`,
+                    path: `/tmp/qr-${doc._id}.pdf`,
                 }
             ]
         );
