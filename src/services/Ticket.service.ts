@@ -2,6 +2,10 @@ import { Inject, Injectable } from "@tsed/di";
 import { BadRequest } from "@tsed/exceptions";
 import { MongooseModel } from "@tsed/mongoose";
 import moment from "moment";
+import { QRCode, QRSvg } from 'sexy-qr';
+import PDFDocument from 'pdfkit';
+import SVGtoPDF from 'svg-to-pdfkit';
+import * as fs from 'fs';
 import { CustomerModel } from "src/models/Customer.model";
 import { TicketEasyModel, TicketModel, TicketUpdateModel } from "src/models/Ticket.model";
 import { YearModel } from "src/models/Year.model";
@@ -9,6 +13,7 @@ import { CustomerService } from "./Customer.service";
 import { NodemailerService } from "./Nodemailer.service";
 import { TimeService } from "./Time.service";
 import { WebSocketService } from "./web-socket.service";
+const API_ENDPOINT = process.env["API_ENDPOINT"];
 
 @Injectable()
 export class TicketService {
@@ -33,6 +38,44 @@ export class TicketService {
 
         // this.nodemailerService.sendTestMail();
         return doc;
+    }
+
+    private svgGenerate (obj: TicketModel) {
+        const qrCode = new QRCode({
+            content: `${API_ENDPOINT}/ticket/${obj._id}/`,
+            ecl: 'M', // 'L' | 'M' | 'Q' | 'H'
+          });
+        
+          const qrSvg = new QRSvg(qrCode, {
+            fill: '#182026',
+            cornerBlocksAsCircles: false,
+            size: 300, // px
+            radiusFactor: 0.75, // 0-1
+            cornerBlockRadiusFactor: 2, // 0-3
+            roundInnerCorners: true,
+            roundOuterCorners: true,
+            preContent: '<!-- QR Code -->',
+          });
+        
+          return qrSvg.svg;
+    }
+
+    pdf(obj: TicketModel) {
+
+        // Create a document
+        const doc = new PDFDocument();
+        doc.pipe(fs.createWriteStream(`/tmp/qr-${obj._id}.pdf`));
+        const svg = this.svgGenerate(obj);
+        SVGtoPDF(doc, svg, 50, 50, {});
+
+        // Embed a font, set the font size, and render some text
+        doc
+            // .font('fonts/PalatinoBold.ttf')
+            .fontSize(25)
+            .text(obj._id, 50, 300);
+
+        doc.end();
+        return;
     }
 
     async saveEasy(obj: TicketEasyModel) {
@@ -116,6 +159,8 @@ export class TicketService {
         doc = await doc
             .populate(["owner", "year", "time"])
         this.wss.broadcast("new-ticket", doc);
+        const svgCode = this.svgGenerate(doc);
+        this.pdf(doc);
         await this.nodemailerService.sendAndParse(
             // @ts-ignore
             doc.owner.email,
@@ -123,7 +168,18 @@ export class TicketService {
             "new-reservation",
             {
                 "reservation": doc,
-            }
+            },
+            [
+                {
+                    filename: `pohles-reservation-qrcode-${doc._id}.svg`,
+                    cid: 'reservation-qrcode.svg',
+                    content: svgCode
+                },
+                {
+                    filename: `pohles-reservation-${doc._id}.pdf`,
+                    path: `/tmp/qr-${doc._id}.pdf`,
+                }
+            ]
         );
         console.log(doc);
         return doc;

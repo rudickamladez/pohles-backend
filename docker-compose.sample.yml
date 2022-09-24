@@ -20,6 +20,7 @@ services:
     links:
       - mongo
     environment:
+      API_ENDPOINT: "https://api.pohles.rudickamladez.cz"
       MONGO_URL: mongodb://pohlesuser:examplepass@mongo:27017/pohles
       NODEMAILER_TRANSPORT: '{"host": "", "port": 465, "secure": true, "auth": {"user": "user@user.net", "pass": "pass"}}'
     stdin_open: true  # -i
