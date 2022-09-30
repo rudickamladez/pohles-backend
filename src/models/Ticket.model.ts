@@ -1,6 +1,5 @@
 import { Model, ObjectID, Ref } from "@tsed/mongoose";
 import { Default, Enum, Format, Property, Required } from "@tsed/schema";
-import { CustomerEasyTicketModel, CustomerModel } from "./Customer.model";
 import { TimeModel } from "./Time.model";
 import { YearModel } from "./Year.model";
 
@@ -12,21 +11,26 @@ export class TicketModel {
   _id: string;
 
   @Property()
-  @Enum("paid", "unpaid", "cancelled", "confirmed")
+  @Enum("paid", "unpaid", "cancelled")
   @Default("unpaid")
   status: string;
 
   @Property()
+  statusChanges: TicketStatusChangeSchema[];
+
+  @Property()
   @Required()
-  @Ref(CustomerModel)
-  owner: Ref<CustomerModel>;
+  name: TicketNameSchema;
+
+  @Property()
+  @Required()
+  email: string;
 
   @Property()
   @Required()
   @Ref(YearModel)
   year: Ref<YearModel>;
 
-  // Team from YearModel.times
   @Property()
   @Required()
   @Ref(TimeModel)
@@ -44,25 +48,61 @@ export class TicketUpdateModel {
   status: string;
 
   @Property()
-  @Ref(CustomerModel)
-  owner: Ref<CustomerModel>;
+  name: TicketNameUpdateSchema;
+
+  @Property()
+  email: string;
 
   @Property()
   @Ref(YearModel)
   year: Ref<YearModel>;
 
-  // Team from YearModel.times
   @Property()
   @Ref(TimeModel)
   time: Ref<TimeModel>;
 }
 
-export class TicketEasyModel {
+export class TicketEasySchema {
   @Property()
-  buyer: CustomerEasyTicketModel;
+  @Required()
+  name: TicketNameSchema;
 
-  // Team from YearModel.times
   @Property()
+  @Required()
+  email: string;
+
+  @Property()
+  @Required()
   @Ref(TimeModel)
   time: Ref<TimeModel>;
+}
+
+class TicketNameSchema {
+  @Property()
+  @Required()
+  first: string;
+
+  @Property()
+  @Required()
+  last: string;
+}
+
+class TicketNameUpdateSchema {
+  @Property()
+  first: string;
+
+  @Property()
+  last: string;
+}
+
+class TicketStatusChangeSchema {
+  @Property()
+  @Format("date-time")
+  @Default(Date.now)
+  date: Date;
+
+  @Property()
+  @Enum("paid", "unpaid", "cancelled")
+  @Required()
+  status: string;
 }

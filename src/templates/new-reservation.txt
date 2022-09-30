@@ -3,9 +3,9 @@ Dobrý den,
 zde je potvrzení Vaší rezervace:
 
 ID: <%= reservation._id %>
-Křestní jméno: <%= reservation.owner.names[reservation.owner.names.length-1].first %>
-Příjmení: <%= reservation.owner.names[reservation.owner.names.length-1].last %>
-Email: <%= reservation.owner.email %>
+Křestní jméno: <%= reservation.name.first %>
+Příjmení: <%= reservation.name.last %>
+Email: <%= reservation.email %>
 Čas: <%= reservation.time.name %>
 
 Prosíme Vás, abyste se dostavili nejpozději 20 minut před Vaším časem, nebo bude Vaše rezervace zrušena.

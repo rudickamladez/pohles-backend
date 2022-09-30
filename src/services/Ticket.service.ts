@@ -6,10 +6,8 @@ import { QRCode, QRSvg } from 'sexy-qr';
 import PDFDocument from 'pdfkit';
 import SVGtoPDF from 'svg-to-pdfkit';
 import * as fs from 'fs';
-import { CustomerModel } from "src/models/Customer.model";
-import { TicketEasyModel, TicketModel, TicketUpdateModel } from "src/models/Ticket.model";
+import { TicketEasySchema, TicketModel, TicketUpdateModel } from "src/models/Ticket.model";
 import { YearModel } from "src/models/Year.model";
-import { CustomerService } from "./Customer.service";
 import { NodemailerService } from "./Nodemailer.service";
 import { TimeService } from "./Time.service";
 import { WebSocketService } from "./web-socket.service";
@@ -19,8 +17,6 @@ const API_ENDPOINT = process.env["API_ENDPOINT"];
 export class TicketService {
     constructor(
         @Inject(TicketModel) private model: MongooseModel<TicketModel>,
-        @Inject(CustomerModel) private customerModel: MongooseModel<CustomerModel>,
-        @Inject(CustomerService) private customerService: CustomerService,
         @Inject(YearModel) private yearModel: MongooseModel<YearModel>,
         @Inject(TimeService) private timeService: TimeService,
         @Inject(NodemailerService) private nodemailerService: NodemailerService,
@@ -32,11 +28,8 @@ export class TicketService {
     async save(obj: TicketModel) {
         let doc = new this.model(obj);
         await doc.save();
-        doc = await doc
-            .populate(["owner", "year", "time"])
+        doc = await doc.populate(["year", "time"]);
         this.wss.broadcast("new-ticket", doc);
-
-        // this.nodemailerService.sendTestMail();
         return doc;
     }
 
@@ -78,28 +71,7 @@ export class TicketService {
         return;
     }
 
-    async saveEasy(obj: TicketEasyModel) {
-        /**
-         * Find buyer in database, if not found -> create document
-         */
-        let customer = await this.customerModel.findOne({ email: obj.buyer.email.trim() });
-        let owner;
-        if (customer) {
-            const foundName = customer.names.some(name => {
-                return (name.first == obj.buyer.name.first) && (name.last == obj.buyer.name.last);
-            })
-            if (!foundName) {
-                customer.names.push(obj.buyer.name);
-                owner = await this.customerService.update(customer.id, customer);
-            } else {
-                owner = customer;
-            }
-        } else {
-            let buyer = new CustomerModel();
-            buyer.names = [obj.buyer.name];
-            buyer.email = obj.buyer.email;
-            owner = await this.customerService.save(buyer);
-        }
+    async saveEasy(obj: TicketEasySchema) {
 
         // Get active year
         let year = await this.yearModel.findOne({ status: 'active' });
@@ -111,10 +83,7 @@ export class TicketService {
                 endOfReservations: moment().add(14, 'days').calendar(),
             })
             year = await year.save();
-            year = await year
-                .populate(["times"])
-                //@ts-ignore
-                // .execPopulate();
+            year = await year.populate(["times"])
         }
 
         /**
@@ -150,20 +119,21 @@ export class TicketService {
         }
 
         let doc = new this.model({
-            owner: owner,
+            name: {
+              first: obj.name.first,
+              last: obj.name.last,
+            },
+            email: obj.email,
             time: timeId,
-            //@ts-ignore
             year: year.id,
         });
         await doc.save();
-        doc = await doc
-            .populate(["owner", "year", "time"])
+        doc = await doc.populate(["year", "time"])
         this.wss.broadcast("new-ticket", doc);
         const svgCode = this.svgGenerate(doc);
         this.pdf(doc);
         await this.nodemailerService.sendAndParse(
-            // @ts-ignore
-            doc.owner.email,
+            doc.email,
             "Nová rezervace",
             "new-reservation",
             {
@@ -189,7 +159,6 @@ export class TicketService {
         return await this.model
             .find()
             .sort("date")
-            .populate("owner")
             .populate("year")
             .populate("time")
             .exec();
@@ -198,7 +167,6 @@ export class TicketService {
     async findById(id: string) {
         return await this.model
             .findById(id)
-            .populate("owner")
             .populate("year")
             .populate("time")
             .exec();
@@ -207,7 +175,6 @@ export class TicketService {
     async deleteById(id: string) {
         const doc = await this.model
             .findByIdAndDelete(id)
-            .populate("owner")
             .populate("year")
             .populate("time")
             .exec();
@@ -219,33 +186,41 @@ export class TicketService {
         id: string,
         update: TicketUpdateModel
     ) {
-        let obj = await this.model
-            .findById(id);
-
-        if (obj) {
-            if (update.status) {
-                obj.status = update.status;
-            }
-
-            if (update.owner) {
-                obj.owner = update.owner;
-            }
-
-            if (update.year) {
-                obj.year = update.year;
-            }
-
-            if (update.time) {
-                obj.time = update.time;
-            }
-
-            obj.save();
-            let res = await obj
-                .populate(["owner", "year", "time"])
-            this.wss.broadcast("update-ticket", res);
-            return res;
+        let obj = await this.model.findById(id);
+        if (!obj) {
+            return null;
         }
-        return null;
+
+        if (update.status) {
+            obj.status = update.status;
+        }
+
+        if (update.name) {
+            if (update.name.first) {
+                obj.name.first = update.name.first;
+            }
+
+            if (update.name.last) {
+                obj.name.last = update.name.last;
+            }
+        }
+
+        if (update.email) {
+            obj.email = update.email;
+        }
+
+        if (update.year) {
+            obj.year = update.year;
+        }
+
+        if (update.time) {
+            obj.time = update.time;
+        }
+
+        await obj.save();
+        let res = await obj.populate(["year", "time"])
+        this.wss.broadcast("update-ticket", res);
+        return res;
     }
 
 }
