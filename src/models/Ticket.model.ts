@@ -3,6 +3,36 @@ import { Default, Enum, Format, Property, Required } from "@tsed/schema";
 import { TimeModel } from "./Time.model";
 import { YearModel } from "./Year.model";
 
+class TicketNameSchema {
+  @Property()
+  @Required()
+  first: string;
+
+  @Property()
+  @Required()
+  last: string;
+}
+
+class TicketNameUpdateSchema {
+  @Property()
+  first: string;
+
+  @Property()
+  last: string;
+}
+
+class TicketStatusChangeSchema {
+  @Property()
+  @Format("date-time")
+  @Default(Date.now)
+  date: Date;
+
+  @Property()
+  @Enum("paid", "unpaid", "cancelled")
+  @Required()
+  status: string;
+}
+
 @Model({
   name: "tickets"
 })
@@ -75,34 +105,4 @@ export class TicketEasySchema {
   @Required()
   @Ref(TimeModel)
   time: Ref<TimeModel>;
-}
-
-class TicketNameSchema {
-  @Property()
-  @Required()
-  first: string;
-
-  @Property()
-  @Required()
-  last: string;
-}
-
-class TicketNameUpdateSchema {
-  @Property()
-  first: string;
-
-  @Property()
-  last: string;
-}
-
-class TicketStatusChangeSchema {
-  @Property()
-  @Format("date-time")
-  @Default(Date.now)
-  date: Date;
-
-  @Property()
-  @Enum("paid", "unpaid", "cancelled")
-  @Required()
-  status: string;
 }
