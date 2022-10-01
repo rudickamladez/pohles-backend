@@ -1,7 +1,7 @@
 import { BodyParams, Controller, Delete, Get, Inject, Patch, PathParams, Post } from "@tsed/common";
 import { ContentType, Description, Returns, Summary } from "@tsed/schema";
 import { KeycloakAuth } from "src/decorators/KeycloakAuthOptions.decorator";
-import { TicketEasyModel, TicketModel, TicketUpdateModel } from "src/models/Ticket.model";
+import { TicketEasySchema, TicketModel, TicketUpdateModel } from "src/models/Ticket.model";
 import { TicketService } from "src/services/Ticket.service";
 
 @Controller("/ticket")
@@ -24,7 +24,7 @@ export class TicketController {
   @Summary("Create new ticket easily")
   @Description("Returns an new ticket from database.")
   @Returns(200, TicketModel)
-  async createTicketEasily(@BodyParams() ticket: TicketEasyModel) {
+  async createTicketEasily(@BodyParams() ticket: TicketEasySchema) {
     return await this.ticketService.saveEasy(ticket);
   }
 

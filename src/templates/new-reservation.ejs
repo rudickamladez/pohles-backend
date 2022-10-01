@@ -12,10 +12,10 @@
     <p>zde je potvrzení Vaší rezervace:<br>
         <br>
         ID: <%= reservation._id %><br>
-            Křestní jméno: <%= reservation.owner.names[reservation.owner.names.length-1].first %><br>
-                Příjmení: <%= reservation.owner.names[reservation.owner.names.length-1].last %><br>
-                    Email: <%= reservation.owner.email %><br>
-                        Čas: <%= reservation.time.name %><br>
+        Křestní jméno: <%= reservation.name.first %><br>
+        Příjmení: <%= reservation.name.last %><br>
+        Email: <%= reservation.email %><br>
+        Čas: <%= reservation.time.name %><br>
     </p>
     <br>
     <p>
