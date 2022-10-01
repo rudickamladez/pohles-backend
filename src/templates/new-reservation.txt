@@ -3,23 +3,23 @@ Dobrý den,
 zde je potvrzení Vaší rezervace:
 
 ID: <%= reservation._id %>
-Křestní jméno: <%= reservation.owner.names[reservation.owner.names.length-1].first %>
-Příjmení: <%= reservation.owner.names[reservation.owner.names.length-1].last %>
-Email: <%= reservation.owner.email %>
+Křestní jméno: <%= reservation.name.first %>
+Příjmení: <%= reservation.name.last %>
+E-mail: <%= reservation.email %>
 Čas: <%= reservation.time.name %>
 
-Prosíme Vás, abyste se dostavili nejpozději 20 minut před Vaším časem, nebo bude Vaše rezervace zrušena.
-S ohledem na vzniklou situaci kolem onemocnění Covid-19 Vás žádáme, abyste dodržovali aktuální vládní nařízení.
+Prosíme Vás, abyste se dostavili nejpozději 20 minut před Vaším zarezervovaným časem, jinak bude Vaše rezervace zrušena.
+S ohledem na aktuální situaci kolem onemocnění Covid-19 Vás žádáme, abyste dodržovali aktuální vládní nařízení.
 
-V rámci šetření naší planety Země, oceníme vlastní hrníček na teplý čajíček.
+V rámci ochrany naší planety Země, oceníme vlastní hrníček na teplý čajíček.
 
-Trasa našeho Pohádkového lesa začíná a končí v areálu Větrného mlýna v Rudici. Odkaz na Google Mapy:
-https://goo.gl/maps/Vi4czutYppCeBANeA
+Trasa našeho Pohádkového lesa začíná a končí v areálu Sadu pod Lipou v Rudici. Odkaz na Google Mapy:
+https://goo.gl/maps/ahKZ9YrUWrKsGH7s5
 
-Návštěvníky přijíždějící autem prosíme, aby využili Parkoviště pro Větrný mlýn a Rudické propadání. Odkaz na Google Mapy:
+Návštěvníky přijíždějící autem prosíme, aby využili parkoviště nedaleko místa konání akce. Odkaz na Google Mapy:
 https://goo.gl/maps/EPPPv2R1ow9DStVRA
 
-Pokud budete mít jakékoliv připomínky, nebo dotazy k průběhu akce, zašlete nám prosím zpětnou vazbu jako odpověď na tento email.
+Pokud budete mít jakékoliv připomínky, nebo dotazy k průběhu akce, zašlete nám prosím zpětnou vazbu v odpovědi na tento e-mail.
 
 S přáním hezkého dne,
 Pořadatelé Pohádkového lesa v Rudici
