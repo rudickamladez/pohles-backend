@@ -38,6 +38,18 @@ export class TicketController {
   }
 
   @ContentType("application/json")
+  @Post("/mail/:id")
+  @Summary("Send e-mail with ticket to user again.")
+  @Description("Returns response from nodemailer.")
+  @Returns(200, Object)
+  @KeycloakAuth({ anyRole: ["realm:admin", "realm:ticket-editor"] })
+  async mail(
+    @PathParams("id") id: string
+  ) {
+    return await this.ticketService.sendNewReservationMailAgain(id);
+  }
+
+  @ContentType("application/json")
   @Get("/:id")
   @Summary("Get one ticket by ID")
   @Description("Returns an ticket with given ID from database.")
