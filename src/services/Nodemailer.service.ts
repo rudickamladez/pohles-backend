@@ -77,13 +77,14 @@ export class NodemailerService implements OnInit {
 
     //this.nodeMailerService.sendAndParse("email@seznam.cz", "Testovací email", "test.ejs", {"text": "Hello, World!"});
     public async sendAndParse(to: string, subject: string, fileName: string, data: object, attachments: Attachment[], ejsOptions?: object, ) {
-        this.sendHtmlAndTextWithAttachments(
+        let info = await this.sendHtmlAndTextWithAttachments(
             to,
             subject,
             await this.parse(`${fileName}.ejs`, data, ejsOptions),
             await this.parse(`${fileName}.txt`, data, ejsOptions),
             attachments,
         );
+        return info;
     }
 
     public async sendHtmlAndText(to: string, subject: string, html: string, text: string) {
@@ -95,6 +96,7 @@ export class NodemailerService implements OnInit {
             html: html,
         });
         console.log("Message sent: %s", info.messageId);
+        return info;
     }
 
     public async sendHtmlAndTextWithAttachments(to: string, subject: string, html: string, text: string, attachments: Attachment[]) {
@@ -107,6 +109,7 @@ export class NodemailerService implements OnInit {
             attachments,
         });
         console.log("Message sent: %s", info.messageId);
+        return info;
     }
 
     public async sendHtml(to: string, subject: string, html: string) {
@@ -117,6 +120,7 @@ export class NodemailerService implements OnInit {
             html: html,
         });
         console.log("Message sent: %s", info.messageId);
+        return info;
     }
 
     private parse(fileName: string, data: object, options?: object) {

@@ -155,6 +155,36 @@ export class TicketService {
         return doc;
     }
 
+    async sendNewReservationMailAgain(id: string) {
+        const ticket = await this.findById(id);
+        if (!ticket) {
+            return null;
+        }
+
+        const svgCode = this.svgGenerate(ticket);
+        this.pdf(ticket);
+        const mailInfo = await this.nodemailerService.sendAndParse(
+            ticket.email,
+            "Potvrzení rezervace",
+            "recapitulation-reservation",
+            {
+                "reservation": ticket,
+            },
+            [
+                {
+                    filename: `pohles-reservation-qrcode-${ticket._id}.svg`,
+                    cid: 'reservation-qrcode.svg',
+                    content: svgCode
+                },
+                {
+                    filename: `pohles-reservation-${ticket._id}.pdf`,
+                    path: `/tmp/qr-${ticket._id}.pdf`,
+                }
+            ]
+        );
+        return mailInfo;
+    }
+
     async getAll() {
         return await this.model
             .find()
