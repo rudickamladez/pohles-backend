@@ -165,7 +165,7 @@ export class TicketService {
         this.pdf(ticket);
         const mailInfo = await this.nodemailerService.sendAndParse(
             ticket.email,
-            "Potvrzení rezervace",
+            "Rekapitulace rezervace",
             "recapitulation-reservation",
             {
                 "reservation": ticket,
