@@ -33,6 +33,7 @@ export class TicketController {
   @Summary("Get all tickets")
   @Description("Returns list of all tickets from database.")
   @Returns(200, Array).Of(TicketModel)
+  @KeycloakAuth({ anyRole: ["realm:admin", "realm:ticket-editor"] })
   async getAll() {
     return await this.ticketService.getAll();
   }
