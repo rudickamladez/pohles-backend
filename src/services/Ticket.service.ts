@@ -11,6 +11,7 @@ import { YearModel } from "src/models/Year.model";
 import { NodemailerService } from "./Nodemailer.service";
 import { TimeService } from "./Time.service";
 import { WebSocketService } from "./web-socket.service";
+import { ExportToCsv } from 'export-to-csv';
 const API_ENDPOINT = process.env["API_ENDPOINT"];
 
 @Injectable()
@@ -251,6 +252,39 @@ export class TicketService {
         let res = await obj.populate(["year", "time"])
         this.wss.broadcast("update-ticket", res);
         return res;
+    }
+
+    async getCSV() {
+        const ticketsData = await this.getAll();
+        const tickets = [];
+        for (let i = 0; i < ticketsData.length; i++) {
+            const t = ticketsData[i];
+            tickets.push({
+                time: t.time.toString(),
+                firstname: t.name.first,
+                lastname: t.name.last,
+                status: t.status,
+                email: t.email,
+                date: moment(t.date).format(),
+            });
+        }
+
+        const options = { 
+            fieldSeparator: ',',
+            quoteStrings: '"',
+            decimalSeparator: '.',
+            showLabels: true, 
+            showTitle: false,
+            title: `Tickets export CSV at ${moment().format('lll')}`,
+            useTextFile: false,
+            useBom: true,
+            useKeysAsHeaders: true,
+            // headers: ['Column 1', 'Column 2', etc...] <-- Won't work with useKeysAsHeaders present!
+          };
+         
+        const csvExporter = new ExportToCsv(options);
+        const csvData = csvExporter.generateCsv(tickets, true);
+        return csvData;
     }
 
 }

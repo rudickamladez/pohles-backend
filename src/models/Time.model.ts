@@ -15,6 +15,10 @@ export class TimeModel {
   @Property()
   @Required()
   maxCountOfTickets: number;
+
+  toString() {
+    return this.name;
+  }
 }
 
 export class TimeUpdateModel {

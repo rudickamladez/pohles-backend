@@ -16,7 +16,10 @@ import { NodemailerConfig } from "./services/Nodemailer.config";
 
 @Configuration({
   ...config,
-  acceptMimes: ["application/json"],
+  acceptMimes: [
+    "application/json",
+    "application/csv"
+  ],
   httpPort: process.env.PORT || 8083,
   httpsPort: false, // CHANGE
   mount: {
