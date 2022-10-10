@@ -254,6 +254,26 @@ export class TicketService {
         return res;
     }
 
+    async pay(
+        id: string
+    ) {
+        let obj = await this.findById(id);
+        if (!obj) {
+            return null;
+        }
+
+        obj.status = 'paid';
+        obj.statusChanges.push({
+            date: new Date(),
+            status: 'paid'
+        });
+
+        await obj.save();
+        let res = await obj.populate(["year", "time"])
+        this.wss.broadcast("update-ticket", res);
+        return res;
+    }
+
     async getCSV() {
         const ticketsData = await this.getAll();
         const tickets = [];

@@ -62,6 +62,18 @@ export class TicketController {
   }
 
   @ContentType("application/json")
+  @Post("/pay/:id")
+  @Summary("Pay the ticket")
+  @Description("Returns paid ticket from database.")
+  @Returns(200, TicketModel)
+  @KeycloakAuth({ anyRole: ["realm:admin", "realm:ticket-editor"] })
+  async payTicket(
+    @PathParams("id") id: string
+  ) {
+    return await this.ticketService.pay(id);
+  }
+
+  @ContentType("application/json")
   @Get("/:id")
   @Summary("Get one ticket by ID")
   @Description("Returns an ticket with given ID from database.")
