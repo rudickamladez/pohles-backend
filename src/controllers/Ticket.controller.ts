@@ -1,5 +1,5 @@
 import { BodyParams, Controller, Delete, Get, Inject, Patch, PathParams, Post } from "@tsed/common";
-import { ContentType, Description, Returns, Summary } from "@tsed/schema";
+import { ContentType, Description, Header, Returns, Summary } from "@tsed/schema";
 import { KeycloakAuth } from "src/decorators/KeycloakAuthOptions.decorator";
 import { TicketEasySchema, TicketModel, TicketUpdateModel } from "src/models/Ticket.model";
 import { TicketService } from "src/services/Ticket.service";
@@ -36,6 +36,17 @@ export class TicketController {
   @KeycloakAuth({ anyRole: ["realm:admin", "realm:ticket-editor"] })
   async getAll() {
     return await this.ticketService.getAll();
+  }
+
+  @ContentType("application/csv")
+  @Get("/export/csv")
+  @Header("content-disposition", "attachment; filename=tickets.csv")
+  @Summary("Get all tickets in CSV file.")
+  @Description("Returns file with list of all tickets from database.")
+  @Returns(200, String)
+  @KeycloakAuth({ anyRole: ["realm:admin", "realm:ticket-editor"] })
+  async getCSV() {
+    return await this.ticketService.getCSV();
   }
 
   @ContentType("application/json")
