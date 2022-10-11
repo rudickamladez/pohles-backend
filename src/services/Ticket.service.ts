@@ -271,6 +271,7 @@ export class TicketService {
         await obj.save();
         let res = await obj.populate(["year", "time"])
         this.wss.broadcast("update-ticket", res);
+        this.wss.broadcast("paid-ticket", res);
         return res;
     }
 
