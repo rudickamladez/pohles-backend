@@ -65,10 +65,13 @@ export class TimeForFrontendModel {
 
 export class TimeSumModel {
   @Property()
+  paid: number;
+
+  @Property()
   free: number;
 
   @Property()
-  occupied: number;
+  reserved: number;
 
   @Property()
   total: number

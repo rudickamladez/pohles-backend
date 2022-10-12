@@ -40,7 +40,7 @@ export class TimeController {
   @ContentType("application/json")
   @Get("/active/sum")
   @Summary("Get active times sum")
-  @Description("Returns object with sum of free, occupied and total positions in times.")
+  @Description("Returns object with sum of paid, free, reserved and total positions in times.")
   @Returns(200, TimeSumModel)
   async getActiveTimesSum() {
     return await this.timeService.activeTimesSum();

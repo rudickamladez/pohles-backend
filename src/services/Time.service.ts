@@ -132,18 +132,28 @@ export class TimeService {
     async activeTimesSum() {
         const activeYear = await this.yearService.active();
         let result = {
+            paid: 0,
             free: 0,
-            occupied: 0,
+            reserved: 0,
             total: 0,
         };
-        result.occupied = await this.ticketModel.countDocuments({ year: activeYear?.id, /* status: { $in: ["confirmed", "paid"] } */ }).exec();
+        result.reserved = await this.ticketModel.countDocuments({
+            year: activeYear?.id,
+            time: { $in: activeYear?.times},
+            /* status: { $in: ["confirmed", "paid"] }, */
+        }).exec();
+        result.paid = await this.ticketModel.countDocuments({
+            year: activeYear?.id,
+            time: { $in: activeYear?.times},
+            status: "paid",
+        }).exec();
 
         await activeYear?.times.forEach(
             (time) => {
                 result.total += time.maxCountOfTickets;
             }
         );
-        result.free = result.total - result.occupied;
+        result.free = result.total - result.reserved;
         return result;
     }
 
