@@ -137,6 +137,9 @@ export class TimeService {
             reserved: 0,
             total: 0,
         };
+        if (!activeYear) {
+            return result;
+        }
         result.reserved = await this.ticketModel.countDocuments({
             year: activeYear?.id,
             time: { $in: activeYear?.times},
@@ -148,12 +151,13 @@ export class TimeService {
             status: "paid",
         }).exec();
 
-        await activeYear?.times.forEach(
-            (time) => {
-                result.total += time.maxCountOfTickets;
-            }
-        );
-        result.free = result.total - result.reserved;
+        for (let i = 0; i < activeYear?.times.length; i++) {
+            const time: TimeModel = activeYear?.times[i];
+            result.total += time.maxCountOfTickets;
+            const countOfTickets: Number = await this.ticketModel.countDocuments({ time: time._id }).exec();
+            const countOfFreeTickets: number = Number(time.maxCountOfTickets - Number(countOfTickets));
+            result.free += (countOfFreeTickets > 0 ? countOfFreeTickets : 0);
+        }
         return result;
     }
 
