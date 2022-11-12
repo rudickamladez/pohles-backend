@@ -155,6 +155,9 @@ export class TimeService {
             const time: TimeModel = activeYear?.times[i];
             result.total += time.maxCountOfTickets;
             const countOfTickets: Number = await this.ticketModel.countDocuments({ time: time._id }).exec();
+            if (countOfTickets > time.maxCountOfTickets) {
+                result.total += Number(countOfTickets) - time.maxCountOfTickets;
+            }
             const countOfFreeTickets: number = Number(time.maxCountOfTickets - Number(countOfTickets));
             result.free += (countOfFreeTickets > 0 ? countOfFreeTickets : 0);
         }
