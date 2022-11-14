@@ -12,7 +12,7 @@
   "dependencies": {
     "@tsed/ajv": "6.128.4",
     "@tsed/common": "6.128.4",
-    "@tsed/core": "6.128.4",
+    "@tsed/core": "6.133.1",
     "@tsed/di": "6.128.4",
     "@tsed/exceptions": "6.128.4",
     "@tsed/json-mapper": "6.128.4",
