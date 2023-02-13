@@ -23,7 +23,7 @@
     "@tsed/swagger": "6.128.4",
     "@types/compression": "^1.7.2",
     "@types/cookie-parser": "^1.4.3",
-    "@types/express-session": "^1.17.5",
+    "@types/express-session": "^1.17.6",
     "@types/method-override": "^0.0.32",
     "@types/nodemailer": "^6.4.7",
     "@types/pdfkit": "^0.12.8",
