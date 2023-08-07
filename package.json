@@ -42,7 +42,7 @@
     "keycloak-connect": "^22.0.1",
     "method-override": "^3.0.0",
     "moment": "^2.29.4",
-    "mongoose": "^6.11.4",
+    "mongoose": "^6.11.5",
     "nodemailer": "^6.9.4",
     "pdfkit": "^0.13.0",
     "sexy-qr": "^0.3.2",
