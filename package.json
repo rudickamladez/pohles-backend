@@ -46,7 +46,7 @@
     "nodemailer": "^6.9.4",
     "pdfkit": "^0.13.0",
     "sexy-qr": "^0.3.2",
-    "socket.io": "^4.7.1",
+    "socket.io": "^4.7.2",
     "svg-to-pdfkit": "^0.1.8",
     "ts-node": "^10.9.1"
   },
