@@ -1,0 +1,36 @@
+name: Deploy docker
+
+on:
+  push:
+    branches: '*'
+  pull_request:
+    types: [opened, reopened, synchronize]
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  ToProduction:
+    runs-on: ubuntu-latest
+    environment: "production"
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - name: Execute deployment on SSH
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: /tank/containers/deploy/pohles-api.sh
+  ToDev:
+    runs-on: ubuntu-latest
+    environment: "dev"
+    steps:
+      - name: Execute deployment on SSH
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: /tank/containers/deploy/pohles-api-dev.sh ${{ github.head_ref || github.ref_name }}
