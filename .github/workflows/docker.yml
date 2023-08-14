@@ -15,7 +15,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@master
       - name: Build the Docker image
-        run: docker build --file Dockerfile --tag ${{ github.repository}}:${{ github.ref_name }} .
+        run: docker build --file Dockerfile --tag ${{ github.repository}}:$(git rev-parse --abbrev-ref HEAD | sed 's/[^a-zA-Z0-9]/-/g') .
   publish-image:
     runs-on: ubuntu-latest
     needs: build-image
