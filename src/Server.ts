@@ -7,7 +7,6 @@ import cors from "cors";
 import "@tsed/ajv";
 import "@tsed/swagger";
 import { config, rootDir } from "./config";
-import { KeycloakService } from "./services/Keycloak.service";
 import "@tsed/socketio";
 import session from "express-session";
 import cookieParser from "cookie-parser";
@@ -35,24 +34,7 @@ import { NodemailerConfig } from "./services/Nodemailer.config";
   swagger: [
     {
       path: "/v3/docs",
-      specVersion: "3.0.1",
-      spec: {
-        components: {
-          securitySchemes: {
-            "oauth2": {
-              type: "oauth2",
-              flows: {
-                authorizationCode: {
-                  authorizationUrl: process.env.SWAGGER_KEYCLOAK_AUTH_URL || "https://auth.lukasmatuska.cz/realms/pohles/protocol/openid-connect/auth",
-                  tokenUrl: process.env.SWAGGER_KEYCLOAK_TOKEN_URL || "https://auth.lukasmatuska.cz/realms/pohles/protocol/openid-connect/token",
-                  refreshUrl: process.env.SWAGGER_KEYCLOAK_TOKEN_URL || "https://auth.lukasmatuska.cz/realms/pohles/protocol/openid-connect/token",
-                  scopes: { openid: "openid", profile: "profile" }
-                }
-              }
-            }
-          }
-        }
-      }
+      specVersion: "3.0.1"
     }
   ],
   views: {
@@ -74,14 +56,6 @@ import { NodemailerConfig } from "./services/Nodemailer.config";
     //@ts-ignore
     connectionOptions: process.env.MONGO_OPTIONS || '',
   }],
-  keycloak: {
-    realm: process.env.KEYCLOAK_REALM || "pohles",
-    bearerOnly: process.env.KEYCLOAK_BEARER_ONLY || true,
-    authServerUrl: process.env.KEYCLOAK_URL || "https://auth.lukasmatuska.cz/",
-    sslRequired: process.env.KEYCLOAK_SSL_REQUIRED || "external",
-    resource: process.env.KEYCLOAK_CLIENT_ID || "backend",
-    confidentialPort: process.env.KEYCLOAK_CONF_PORT || 0
-  },
   nodemailer: {
     transport: JSON.parse(process.env.NODEMAILER_TRANSPORT || "{}"),
     defaults: process.env.NODEMAILER_DEFAULTS,
@@ -91,9 +65,6 @@ import { NodemailerConfig } from "./services/Nodemailer.config";
 export class Server {
   @Inject()
   app: PlatformApplication;
-  
-  @Inject()
-  keycloakService: KeycloakService;
   
   @Configuration()
   settings: Configuration;
@@ -111,16 +82,5 @@ export class Server {
     .use(bodyParser.urlencoded({
       extended: true
     }))
-    .use(session(
-      {
-        secret: "some-secret",
-        resave: false,
-        saveUninitialized: true,
-        store: this.keycloakService.getMemoryStore()
-      }
-      ))
-      .use(this.keycloakService.getKeycloakInstance().middleware());
     }
   }
-
-

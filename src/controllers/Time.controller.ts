@@ -1,6 +1,5 @@
 import { BodyParams, Controller, Delete, Get, Inject, Patch, PathParams, Post } from "@tsed/common";
 import { Any, ContentType, Description, Returns, Summary } from "@tsed/schema";
-import { KeycloakAuth } from "src/decorators/KeycloakAuthOptions.decorator";
 import { TimeForFrontendModel, TimeModel, TimeSumModel, TimeUpdateModel } from "src/models/Time.model";
 import { TimeService } from "src/services/Time.service";
 
@@ -14,7 +13,6 @@ export class TimeController {
   @Summary("Create new time")
   @Description("Returns an inserted time from databse.")
   @Returns(200, TimeModel)
-  @KeycloakAuth({ anyRole: ["realm:admin", "realm:time-editor"] })
   async createtime(@BodyParams() time: TimeModel) {
     return await this.timeService.save(time);
   }
@@ -62,7 +60,6 @@ export class TimeController {
   @Description("Returns deleted time from database.")
   @Returns(200, TimeModel)
   @Returns(404).Description("Not found")
-  @KeycloakAuth({ anyRole: ["realm:admin", "realm:time-editor"] })
   async deleteById(@PathParams("id") id: string) {
     return await this.timeService.deleteById(id);
   }
@@ -73,7 +70,6 @@ export class TimeController {
   @Description("Returns updated time from database.")
   @Returns(200, TimeModel)
   @Returns(404).Description("Not found")
-  @KeycloakAuth({ anyRole: ["realm:admin", "realm:time-editor"] })
   async patchById(
     @PathParams("id") id: string,
     @BodyParams() update: TimeUpdateModel
