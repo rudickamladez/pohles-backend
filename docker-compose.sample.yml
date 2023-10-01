@@ -1,28 +1,17 @@
 version: "3.5"
 services:
-  mongo:
-    image: mongo
+  api:
+    image: ghcr.io/rudickamladez/pohles-backend:latest
+    # build:
+    #   context: .
+    #   dockerfile: ./Dockerfile
+    #   args:
+    #     - http_proxy
+    #     - https_proxy
+    #     - no_proxy
     restart: always
-    environment:
-      MONGO_INITDB_DATABASE: pohles
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: examplepass
-    volumes:
-      - ./data/mongo:/data/db
-      - ${PWD}/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-  server:
-    image: pohles-backend
-    restart: always
-    depends_on:
-      - mongo
     ports:
-      - "8081:8081"
-    links:
-      - mongo
-    environment:
-      API_ENDPOINT: "https://api.pohles.rudickamladez.cz"
-      MONGO_URL: mongodb://pohlesuser:examplepass@mongo:27017/pohles
-      NODEMAILER_TRANSPORT: '{"host": "", "port": 465, "secure": true, "auth": {"user": "user@user.net", "pass": "pass"}}'
+      - "8000:80"
     stdin_open: true  # -i
     tty: true         # -t
 

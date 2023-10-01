@@ -1,15 +1,16 @@
-FROM node:lts-alpine
+FROM tiangolo/uvicorn-gunicorn-fastapi:python3.11
 
-RUN apk update && apk add build-base git
+WORKDIR /code
 
-COPY . .
+COPY ./requirements.txt /code/requirements.txt
 
-RUN npm install --location=global npm
-RUN npm install
-RUN npm run build
+# Install requirements
+RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
-EXPOSE 8081
-ENV PORT 8081
-ENV NODE_ENV production
+# Copy folders
+COPY ./.git /code/.git
+COPY ./app /code/app
 
-CMD npm run start:prod
+EXPOSE 80
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
