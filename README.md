@@ -1,6 +1,9 @@
-# pohles-backend
+# PohLes Backend
 
 > An awesome project based on [FastAPI](https://fastapi.tiangolo.com/).
+
+REST API with database for Fairytale forest in Rudice.
+Used by [frontend](https://github.com/rudickamladez/pohles-frontend) and [administration](https://github.com/rudickamladez/pohles-admin-v3).
 
 ## Setup
 
