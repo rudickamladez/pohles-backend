@@ -8,21 +8,21 @@ Příjmení: <%= reservation.name.last %>
 E-mail: <%= reservation.email %>
 Čas: <%= reservation.time.name %>
 
-Prosíme Vás, abyste se dostavili nejpozději 20 minut před Vaším zarezervovaným časem, jinak bude Vaše rezervace zrušena.
-S ohledem na aktuální situaci kolem onemocnění Covid-19 Vás žádáme, abyste dodržovali aktuální vládní nařízení.
+Prosíme Vás, abyste se dostavili nejpozději 20 minut před Vaším zarezervovaným časem, jinak bude Vaše rezervace zrušena.
 
-V rámci ochrany naší planety Země, oceníme vlastní hrníček na teplý čajíček.
+V rámci ochrany naší planety Země, oceníme vlastní hrníček na teplý čajíček.
 
-Trasa našeho Pohádkového lesa začíná a končí v areálu Sadu pod Lipou v Rudici. Odkaz na Google Mapy:
+Trasa našeho Pohádkového lesa začíná a končí v areálu Sadu pod Lipou v Rudici. Odkaz na Google Mapy:
 https://goo.gl/maps/ahKZ9YrUWrKsGH7s5
 
 Návštěvníky přijíždějící autem prosíme, aby využili parkoviště nedaleko místa konání akce. Odkaz na Google Mapy:
 https://goo.gl/maps/EPPPv2R1ow9DStVRA
 
-Pokud budete mít jakékoliv připomínky, nebo dotazy k průběhu akce, zašlete nám prosím zpětnou vazbu v odpovědi na tento e-mail.
+Po skončení akce nám prosím vyplňte dotazník se zpětnou vazbou:
+https://pohles.rudickamladez.cz/feedback
 
-S přáním hezkého dne,
-Pořadatelé Pohádkového lesa v Rudici
+S přáním hezkého dne
+Pořadatelé Pohádkového lesa v Rudici
 
 Email: pohles@rudickamladez.cz
 www pohles.rudickamladez.cz
