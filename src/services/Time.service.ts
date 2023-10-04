@@ -154,7 +154,10 @@ export class TimeService {
         for (let i = 0; i < activeYear?.times.length; i++) {
             const time: TimeModel = activeYear?.times[i];
             result.total += time.maxCountOfTickets;
-            const countOfTickets: Number = await this.ticketModel.countDocuments({ time: time._id }).exec();
+            const countOfTickets: number = await this.ticketModel.countDocuments({
+                year: activeYear?.id,
+                time: time._id,
+            }).exec();
             if (countOfTickets > time.maxCountOfTickets) {
                 result.total += Number(countOfTickets) - time.maxCountOfTickets;
             }
