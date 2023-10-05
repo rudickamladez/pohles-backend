@@ -1,6 +1,6 @@
 FROM node:lts-alpine
 
-RUN apk update && apk add build-base git
+RUN apk update && apk add build-base git curl
 
 COPY . .
 
