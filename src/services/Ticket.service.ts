@@ -281,6 +281,7 @@ export class TicketService {
         for (let i = 0; i < ticketsData.length; i++) {
             const t = ticketsData[i];
             tickets.push({
+                year: t.year.toString(),
                 time: t.time.toString(),
                 firstname: t.name.first,
                 lastname: t.name.last,
