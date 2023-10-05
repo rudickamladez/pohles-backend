@@ -19,6 +19,7 @@ export class TimeService {
     }
 
     async save(obj: TimeModel) {
+        obj.name = obj.name.trim();
         const doc = new this.model(obj);
         await doc.save();
         this.wss.broadcast("new-time", doc);
@@ -49,7 +50,7 @@ export class TimeService {
 
         if (obj) {
             if (update.name) {
-                obj.name = update.name;
+                obj.name = update.name.trim();
             }
 
             if (update.maxCountOfTickets) {

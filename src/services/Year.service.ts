@@ -13,6 +13,7 @@ export class YearService {
     }
 
     async save(obj: YearModel) {
+        obj.name = obj.name.trim();
         let doc = new this.model(obj);
         await doc.save()
         doc = await doc
@@ -53,7 +54,7 @@ export class YearService {
 
         if (obj) {
             if (update.name) {
-                obj.name = update.name;
+                obj.name = update.name.trim();
             }
 
             if (update.status) {
