@@ -11,7 +11,7 @@ import { YearModel } from "src/models/Year.model";
 import { NodemailerService } from "./Nodemailer.service";
 import { TimeService } from "./Time.service";
 import { WebSocketService } from "./web-socket.service";
-import { ExportToCsv } from 'export-to-csv';
+import { stringify } from 'csv-stringify/sync';
 const API_ENDPOINT = process.env["API_ENDPOINT"];
 
 @Injectable()
@@ -34,13 +34,13 @@ export class TicketService {
         return doc;
     }
 
-    private svgGenerate (obj: TicketModel) {
+    private svgGenerate(obj: TicketModel) {
         const qrCode = new QRCode({
             content: `${API_ENDPOINT}/ticket/${obj._id}/`,
             ecl: 'M', // 'L' | 'M' | 'Q' | 'H'
-          });
-        
-          const qrSvg = new QRSvg(qrCode, {
+        });
+
+        const qrSvg = new QRSvg(qrCode, {
             fill: '#182026',
             cornerBlocksAsCircles: false,
             size: 300, // px
@@ -49,9 +49,9 @@ export class TicketService {
             roundInnerCorners: true,
             roundOuterCorners: true,
             preContent: '<!-- QR Code -->',
-          });
-        
-          return qrSvg.svg;
+        });
+
+        return qrSvg.svg;
     }
 
     pdf(obj: TicketModel) {
@@ -121,8 +121,8 @@ export class TicketService {
 
         let doc = new this.model({
             name: {
-              first: obj.name.first,
-              last: obj.name.last,
+                first: obj.name.first,
+                last: obj.name.last,
             },
             email: obj.email,
             time: timeId,
@@ -276,8 +276,11 @@ export class TicketService {
     }
 
     async getCSV() {
+        // Get data from database
         const ticketsData = await this.getAll();
-        const tickets = [];
+
+        // Prepare data for CSV
+        let tickets = [];
         for (let i = 0; i < ticketsData.length; i++) {
             const t = ticketsData[i];
             tickets.push({
@@ -290,21 +293,13 @@ export class TicketService {
             });
         }
 
-        const options = { 
-            fieldSeparator: ',',
-            quoteStrings: '"',
-            decimalSeparator: '.',
-            showLabels: true, 
-            showTitle: false,
-            title: `Tickets export CSV at ${moment().format('lll')}`,
-            useTextFile: false,
-            useBom: true,
-            useKeysAsHeaders: true,
-            // headers: ['Column 1', 'Column 2', etc...] <-- Won't work with useKeysAsHeaders present!
-          };
-         
-        const csvExporter = new ExportToCsv(options);
-        const csvData = csvExporter.generateCsv(tickets, true);
+        // Add headers before CSV data
+        tickets.unshift(Object.keys(tickets[0]).reduce((a, v) => ({ ...a, [v]: v }), {}));
+        
+        // Generate CSV
+        const csvData = stringify(tickets);
+
+        // Return CSV file
         return csvData;
     }
 
