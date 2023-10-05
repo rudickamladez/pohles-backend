@@ -15,10 +15,10 @@ class TicketNameSchema {
 
 class TicketNameUpdateSchema {
   @Property()
-  first: string;
+  first?: string;
 
   @Property()
-  last: string;
+  last?: string;
 }
 
 class TicketStatusChangeSchema {
@@ -73,23 +73,30 @@ export class TicketModel {
 }
 
 export class TicketUpdateModel {
+  @ObjectID("id")
+  _id?: string;
+
   @Property()
   @Enum("paid", "unpaid", "cancelled")
-  status: string;
+  status?: string;
 
   @Property()
-  name: TicketNameUpdateSchema;
+  name?: TicketNameUpdateSchema;
 
   @Property()
-  email: string;
+  email?: string;
 
   @Property()
   @Ref(YearModel)
-  year: Ref<YearModel>;
+  year?: Ref<YearModel>;
 
   @Property()
   @Ref(TimeModel)
-  time: Ref<TimeModel>;
+  time?: Ref<TimeModel>;
+
+  @Property()
+  @Format("date-time")
+  date?: Date;
 }
 
 export class TicketEasySchema {

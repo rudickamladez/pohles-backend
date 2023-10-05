@@ -1,4 +1,4 @@
-import { BodyParams, Controller, Delete, Get, Inject, Patch, PathParams, Post } from "@tsed/common";
+import { BodyParams, Controller, Delete, Get, Inject, Patch, PathParams, Post, QueryParams } from "@tsed/common";
 import { ContentType, Description, Header, Returns, Summary } from "@tsed/schema";
 import { KeycloakAuth } from "src/decorators/KeycloakAuthOptions.decorator";
 import { TicketEasySchema, TicketModel, TicketUpdateModel } from "src/models/Ticket.model";
@@ -30,12 +30,58 @@ export class TicketController {
 
   @ContentType("appliaction/json")
   @Get("/")
-  @Summary("Get all tickets")
-  @Description("Returns list of all tickets from database.")
+  @Summary("Get tickets matching the filter")
+  @Description("Returns list of tickets matching the filter from database.")
   @Returns(200, Array).Of(TicketModel)
   @KeycloakAuth({ anyRole: ["realm:admin", "realm:ticket-editor"] })
-  async getAll() {
-    return await this.ticketService.getAll();
+  async getFiltred(
+    @QueryParams("id") id?: string,
+    @QueryParams("status") status?: string,
+    @QueryParams("first_name") firstName?: string,
+    @QueryParams("last_name") lastName?: string,
+    @QueryParams("email") email?: string,
+    @QueryParams("year_id") year?: string,
+    @QueryParams("time_id") time?: string,
+    @QueryParams("date") date?: Date
+  ) {
+    let filter: TicketUpdateModel = {};
+    if (id) {
+      filter._id = id;
+    }
+
+    if (status) {
+      filter.status = status;
+    }
+
+    if (firstName) {
+      filter.name = {
+        first: firstName
+      };
+    }
+
+    if (lastName) {
+      if (!filter.name) {
+        filter.name = {};
+      }
+      filter.name.last = lastName;
+    }
+
+    if (email) {
+      filter.email = email;
+    }
+
+    if (year) {
+      filter.year = year;
+    }
+
+    if (time) {
+      filter.time = time;
+    }
+
+    if (date) {
+      filter.date = date;
+    }
+    return await this.ticketService.getFiltered(filter);
   }
 
   @ContentType("application/csv")
