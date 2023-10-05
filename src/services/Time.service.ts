@@ -19,6 +19,7 @@ export class TimeService {
     }
 
     async save(obj: TimeModel) {
+        obj.name = obj.name.trim();
         const doc = new this.model(obj);
         await doc.save();
         this.wss.broadcast("new-time", doc);
@@ -49,7 +50,7 @@ export class TimeService {
 
         if (obj) {
             if (update.name) {
-                obj.name = update.name;
+                obj.name = update.name.trim();
             }
 
             if (update.maxCountOfTickets) {
@@ -154,7 +155,10 @@ export class TimeService {
         for (let i = 0; i < activeYear?.times.length; i++) {
             const time: TimeModel = activeYear?.times[i];
             result.total += time.maxCountOfTickets;
-            const countOfTickets: Number = await this.ticketModel.countDocuments({ time: time._id }).exec();
+            const countOfTickets: number = await this.ticketModel.countDocuments({
+                year: activeYear?.id,
+                time: time._id,
+            }).exec();
             if (countOfTickets > time.maxCountOfTickets) {
                 result.total += Number(countOfTickets) - time.maxCountOfTickets;
             }

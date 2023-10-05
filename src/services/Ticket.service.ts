@@ -27,6 +27,9 @@ export class TicketService {
     }
 
     async save(obj: TicketModel) {
+        obj.name.first = obj.name.first.trim()
+        obj.name.last = obj.name.last.trim()
+        obj.email = obj.email.trim()
         let doc = new this.model(obj);
         await doc.save();
         doc = await doc.populate(["year", "time"]);
@@ -121,10 +124,10 @@ export class TicketService {
 
         let doc = new this.model({
             name: {
-                first: obj.name.first,
-                last: obj.name.last,
+              first: obj.name.first.trim(),
+              last: obj.name.last.trim(),
             },
-            email: obj.email,
+            email: obj.email.trim(),
             time: timeId,
             year: year.id,
         });
@@ -195,6 +198,15 @@ export class TicketService {
             .exec();
     }
 
+    async getFiltered(obj: TicketUpdateModel) {
+        return await this.model
+            .find(obj)
+            .sort("date")
+            .populate("year")
+            .populate("time")
+            .exec();
+    }
+
     async findById(id: string) {
         return await this.model
             .findById(id)
@@ -217,11 +229,16 @@ export class TicketService {
         id: string,
         update: TicketUpdateModel
     ) {
+        // Find object in database
         let obj = await this.model.findById(id);
         if (!obj) {
+            // if not found return null
             return null;
         }
 
+        /**
+         * Update document object
+         */
         if (update.status) {
             obj.status = update.status;
         }
@@ -248,9 +265,16 @@ export class TicketService {
             obj.time = update.time;
         }
 
+        // Save document object to database
         await obj.save();
+        
+        // Get document object from database
         let res = await obj.populate(["year", "time"])
+        
+        // Send it thru websocket
         this.wss.broadcast("update-ticket", res);
+        
+        //return to http client
         return res;
     }
 
@@ -284,6 +308,7 @@ export class TicketService {
         for (let i = 0; i < ticketsData.length; i++) {
             const t = ticketsData[i];
             tickets.push({
+                year: t.year.toString(),
                 time: t.time.toString(),
                 firstname: t.name.first,
                 lastname: t.name.last,

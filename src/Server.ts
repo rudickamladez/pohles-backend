@@ -36,6 +36,13 @@ import { NodemailerConfig } from "./services/Nodemailer.config";
     {
       path: "/v3/docs",
       specVersion: "3.0.1",
+      options: {
+        syntaxHighlight:{
+          theme: "monokai",
+        },
+        persistAuthorization: true,
+        tryItOutEnabled: true,
+      },
       spec: {
         components: {
           securitySchemes: {

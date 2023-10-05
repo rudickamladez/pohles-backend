@@ -26,6 +26,10 @@ export class YearModel {
   @Property()
   @Required()
   endOfReservations: Date;
+
+  toString() {
+    return this.name;
+  }
 }
 
 export class YearUpdateModel {
