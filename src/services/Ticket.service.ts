@@ -27,6 +27,9 @@ export class TicketService {
     }
 
     async save(obj: TicketModel) {
+        obj.name.first = obj.name.first.trim()
+        obj.name.last = obj.name.last.trim()
+        obj.email = obj.email.trim()
         let doc = new this.model(obj);
         await doc.save();
         doc = await doc.populate(["year", "time"]);
@@ -121,10 +124,10 @@ export class TicketService {
 
         let doc = new this.model({
             name: {
-              first: obj.name.first,
-              last: obj.name.last,
+              first: obj.name.first.trim(),
+              last: obj.name.last.trim(),
             },
-            email: obj.email,
+            email: obj.email.trim(),
             time: timeId,
             year: year.id,
         });
