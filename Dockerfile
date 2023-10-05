@@ -13,4 +13,7 @@ EXPOSE 8081
 ENV PORT 8081
 ENV NODE_ENV production
 
+HEALTHCHECK --interval=10s --timeout=10s --retries=3 \
+  CMD curl -f http://localhost:${PORT}/ || exit 1
+
 CMD npm run start:prod

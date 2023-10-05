@@ -15,11 +15,6 @@ services:
     restart: always
     depends_on:
       - mongo
-    healthcheck:
-      test: ["CMD-SHELL", "curl --silent --fail localhost:8081 || exit 1"]
-      interval: 10s
-      timeout: 10s
-      retries: 3
     ports:
       - "8081:8081"
     links:
