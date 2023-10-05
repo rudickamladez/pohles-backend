@@ -195,6 +195,15 @@ export class TicketService {
             .exec();
     }
 
+    async getFiltered(obj: TicketUpdateModel) {
+        return await this.model
+            .find(obj)
+            .sort("date")
+            .populate("year")
+            .populate("time")
+            .exec();
+    }
+
     async findById(id: string) {
         return await this.model
             .findById(id)
