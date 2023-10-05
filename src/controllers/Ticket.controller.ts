@@ -104,4 +104,21 @@ export class TicketController {
   ) {
     return await this.ticketService.update(id, update);
   }
+
+  @ContentType("application/json")
+  @Post("/cancel")
+  @Summary("Cancel ticket")
+  @Description("Returns updated ticket from databse or null.")
+  @Returns(200, TicketModel)
+  @Returns(400).Description("Did not send id")
+  @Returns(400).Description("Did not send email")
+  @Returns(404).Description("Ticket not found in database")
+  @Returns(400).Description("User send bad email.")
+  @Returns(409).Description("Ticket already cancelled.")
+  async cancelById(
+    @BodyParams("id") id: string,
+    @BodyParams("email") email: string
+  ) {
+    return await this.ticketService.cancel(id, email);
+  }
 }
