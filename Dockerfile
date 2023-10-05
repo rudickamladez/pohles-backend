@@ -2,6 +2,7 @@ FROM node:lts-alpine
 
 RUN apk update && apk add build-base git curl
 
+WORKDIR /app
 COPY . .
 
 RUN npm install --location=global npm
