@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@tsed/di";
-import { BadRequest } from "@tsed/exceptions";
+import { BadRequest, Conflict, NotFound } from "@tsed/exceptions";
 import { MongooseModel } from "@tsed/mongoose";
 import moment from "moment";
 import { QRCode, QRSvg } from 'sexy-qr';
@@ -328,4 +328,54 @@ export class TicketService {
         return csvData;
     }
 
+    async cancel(
+        id: string,
+        email: string
+    ) {
+        if (!id) {
+            throw new BadRequest("Did not send id");
+        }
+
+        if (!email) {
+            throw new BadRequest("Did not send email");
+        }
+
+        // Remove whitespaces
+        email = email.trim();
+
+        // Find ticket in database
+        let obj = await this.findById(id);
+
+        if (!obj) {
+            throw new NotFound("Ticket not found in database");
+        }
+
+        // Check given email and ticket email
+        if (obj.email.toLowerCase() != email.toLocaleLowerCase()) {
+            throw new BadRequest("User send bad email.");
+            
+        }
+
+        if (obj.status == 'cancelled') {
+            throw new Conflict("Ticket already cancelled.");
+        }
+
+        // Cancel ticket
+        obj.status = 'cancelled';
+        obj.statusChanges.push({
+            date: new Date(),
+            status: 'cancelled'
+        });
+
+        // Save to database
+        await obj.save();
+
+        // Get saved ticket from database
+        let res = await obj.populate(["year", "time"]);
+
+        // Send ticket to clients
+        this.wss.broadcast("update-ticket", res);
+        this.wss.broadcast("cancelled-ticket", res);
+        return res;
+    }
 }
