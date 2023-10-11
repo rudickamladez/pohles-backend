@@ -103,7 +103,15 @@ export class TimeService {
             }
         );
 
-        const res = await this.ticketModel.find({ year: activeYear?.id, /* status: { $in: ["confirmed", "paid"] } */ }).populate("time").exec();
+        // Find reserved tickets in database
+        const res = await this.ticketModel
+            .find({
+                year: activeYear?.id,
+                // status: { $in: ["confirmed", "paid"] }
+                status: { $in: ["confirmed", "paid", "unpaid"] }
+            })
+            .populate("time")
+            .exec();
         res.forEach(
             (ticket) => {
                 //@ts-ignore
@@ -143,12 +151,13 @@ export class TimeService {
         }
         result.reserved = await this.ticketModel.countDocuments({
             year: activeYear?.id,
-            time: { $in: activeYear?.times},
+            time: { $in: activeYear?.times },
+            status: 'unpaid',
             /* status: { $in: ["confirmed", "paid"] }, */
         }).exec();
         result.paid = await this.ticketModel.countDocuments({
             year: activeYear?.id,
-            time: { $in: activeYear?.times},
+            time: { $in: activeYear?.times },
             status: "paid",
         }).exec();
 
