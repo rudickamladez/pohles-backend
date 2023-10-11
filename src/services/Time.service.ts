@@ -145,6 +145,7 @@ export class TimeService {
             free: 0,
             reserved: 0,
             total: 0,
+	        cancelled: 0,
         };
         if (!activeYear) {
             return result;
@@ -174,6 +175,11 @@ export class TimeService {
             const countOfFreeTickets: number = Number(time.maxCountOfTickets - Number(countOfTickets));
             result.free += (countOfFreeTickets > 0 ? countOfFreeTickets : 0);
         }
+        result.cancelled = await this.ticketModel.countDocuments({
+            year: activeYear?.id,
+            time: { $in: activeYear?.times },
+            status: 'cancelled',
+        }).exec();
         return result;
     }
 
