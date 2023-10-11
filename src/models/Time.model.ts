@@ -74,5 +74,8 @@ export class TimeSumModel {
   reserved: number;
 
   @Property()
-  total: number
+  total: number;
+
+  @Property()
+  cancelled: number;
 }
