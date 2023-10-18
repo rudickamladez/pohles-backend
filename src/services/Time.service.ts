@@ -154,7 +154,6 @@ export class TimeService {
             year: activeYear?.id,
             time: { $in: activeYear?.times },
             status: 'unpaid',
-            /* status: { $in: ["confirmed", "paid"] }, */
         }).exec();
         result.paid = await this.ticketModel.countDocuments({
             year: activeYear?.id,
@@ -165,14 +164,15 @@ export class TimeService {
         for (let i = 0; i < activeYear?.times.length; i++) {
             const time: TimeModel = activeYear?.times[i];
             result.total += time.maxCountOfTickets;
-            const countOfTickets: number = await this.ticketModel.countDocuments({
+            const countOfReservedTickets: number = await this.ticketModel.countDocuments({
                 year: activeYear?.id,
                 time: time._id,
+                status: { $in: ['paid', 'unpaid'] },
             }).exec();
-            if (countOfTickets > time.maxCountOfTickets) {
-                result.total += Number(countOfTickets) - time.maxCountOfTickets;
+            if (countOfReservedTickets > time.maxCountOfTickets) {
+                result.total += Number(countOfReservedTickets) - time.maxCountOfTickets;
             }
-            const countOfFreeTickets: number = Number(time.maxCountOfTickets - Number(countOfTickets));
+            const countOfFreeTickets: number = Number(time.maxCountOfTickets - Number(countOfReservedTickets));
             result.free += (countOfFreeTickets > 0 ? countOfFreeTickets : 0);
         }
         result.cancelled = await this.ticketModel.countDocuments({
