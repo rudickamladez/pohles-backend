@@ -114,8 +114,17 @@ export class TicketService {
             throw new BadRequest("Not found time for new ticket.");
         }
 
+        /**
+         * Count tickets at time
+         */
         //@ts-ignore
-        let countOfTicketsInSelectedTime = await this.model.countDocuments({ year: year._id, time: timeId });
+        let countOfTicketsInSelectedTime = await this.model.countDocuments({
+            year: year._id,
+            time: timeId,
+            status: {
+                $in: ['paid', 'unpaid']
+            }
+        });
         // @ts-ignore
         if (countOfTicketsInSelectedTime >= timeFromDB?.maxCountOfTickets) {
             console.error("[Ticket.service.ts::saveEasy] Cannot create new ticket! Time is full.");
