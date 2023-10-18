@@ -124,8 +124,8 @@ export class TicketService {
 
         let doc = new this.model({
             name: {
-              first: obj.name.first.trim(),
-              last: obj.name.last.trim(),
+                first: obj.name.first.trim(),
+                last: obj.name.last.trim(),
             },
             email: obj.email.trim(),
             time: timeId,
