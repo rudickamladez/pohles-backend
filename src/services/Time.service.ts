@@ -1,7 +1,7 @@
 import { Inject, Injectable } from "@tsed/di";
 import { MongooseModel } from "@tsed/mongoose";
 import { TicketModel } from "src/models/Ticket.model";
-import { TimeForFrontendModel, TimeModel, TimeUpdateModel } from "src/models/Time.model";
+import { TimeForFrontendModel, TimeModel, TimeSumModel, TimeUpdateModel } from "src/models/Time.model";
 import { YearModel } from "src/models/Year.model";
 import { WebSocketService } from "./web-socket.service";
 import { YearService } from "./Year.service";
@@ -140,7 +140,7 @@ export class TimeService {
 
     async activeTimesSum() {
         const activeYear = await this.yearService.active();
-        let result = {
+        let result: TimeSumModel = {
             paid: 0,
             free: 0,
             reserved: 0,
