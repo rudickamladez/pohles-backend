@@ -96,6 +96,7 @@ export class TicketController {
   }
   
   @Get("/export/pdf/by-times")
+  @Header("content-disposition", "attachment; filename=tickets-by-time.pdf")
   @Summary("Get file to print tickets groupped by times in ACTIVE year.")
   @Description("Returns file with list of this year tickets from database.")
   @ContentType("application/pdf")
