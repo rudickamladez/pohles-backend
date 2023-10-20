@@ -99,7 +99,7 @@ export class TicketController {
   @Summary("Get file to print tickets groupped by times in ACTIVE year.")
   @Description("Returns file with list of this year tickets from database.")
   @ContentType("application/pdf")
-  // @Returns(200, Uint8Array)
+  @Returns(200, Uint8Array)
   @KeycloakAuth({ anyRole: ["realm:admin", "realm:ticket-editor", "realm:ticket-viewer"] })
   async getPdfByTimes() {
     return await this.ticketService.pdfByTimes();
