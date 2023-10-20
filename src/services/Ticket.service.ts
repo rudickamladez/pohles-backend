@@ -12,6 +12,7 @@ import { NodemailerService } from "./Nodemailer.service";
 import { TimeService } from "./Time.service";
 import { WebSocketService } from "./web-socket.service";
 import { stringify } from 'csv-stringify/sync';
+import { YearService } from "./Year.service";
 const API_ENDPOINT = process.env["API_ENDPOINT"];
 
 @Injectable()
@@ -21,7 +22,8 @@ export class TicketService {
         @Inject(YearModel) private yearModel: MongooseModel<YearModel>,
         @Inject(TimeService) private timeService: TimeService,
         @Inject(NodemailerService) private nodemailerService: NodemailerService,
-        @Inject(WebSocketService) private wss: WebSocketService
+        @Inject(WebSocketService) private wss: WebSocketService,
+        @Inject(YearService) private yearService: YearService
     ) {
 
     }
@@ -267,13 +269,13 @@ export class TicketService {
 
         // Save document object to database
         await obj.save();
-        
+
         // Get document object from database
         let res = await obj.populate(["year", "time"])
-        
+
         // Send it thru websocket
         this.wss.broadcast("update-ticket", res);
-        
+
         //return to http client
         return res;
     }
@@ -320,7 +322,7 @@ export class TicketService {
 
         // Add headers before CSV data
         tickets.unshift(Object.keys(tickets[0]).reduce((a, v) => ({ ...a, [v]: v }), {}));
-        
+
         // Generate CSV
         const csvData = stringify(tickets);
 
@@ -353,7 +355,7 @@ export class TicketService {
         // Check given email and ticket email
         if (obj.email.toLowerCase() != email.toLocaleLowerCase()) {
             throw new BadRequest("User send bad email.");
-            
+
         }
 
         if (obj.status == 'cancelled') {
@@ -377,5 +379,46 @@ export class TicketService {
         this.wss.broadcast("update-ticket", res);
         this.wss.broadcast("cancelled-ticket", res);
         return res;
+    }
+
+    async groupByTimeinActiveYear() {
+        // Get active year
+        let year = await this.yearService.active();
+
+        let result = await this.model.aggregate([
+            {
+                // select
+                $match: {
+                    year: year?._id
+                }
+            },
+            {
+                // sort
+                $sort: {
+                    'name.last': 1
+                }
+            },
+            {
+                $lookup: {
+                    from: 'times',
+                    localField: 'time', // from ticket
+                    foreignField: '_id', // from time
+                    as: 'related_time'
+                }
+            },
+            {
+                $group: {
+                    _id: '$time', // group by time from ticket
+                    time: {
+                        $first: '$related_time'
+                    },
+                    // create array of tickets
+                    tickets: {
+                        $push: '$$ROOT'
+                    },
+                }
+            },
+        ])
+        return result
     }
 }

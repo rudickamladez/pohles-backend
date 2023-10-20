@@ -120,6 +120,15 @@ export class TicketController {
   }
 
   @ContentType("application/json")
+  @Get("/by-times")
+  @Summary("Get array of tickets groupped by time in ACTIVE year.")
+  @Description("Lorem Ipsum")
+  @Returns(200, Object)
+  async getFileForPrintByTimes() {
+    return this.ticketService.groupByTimeinActiveYear();
+  }
+
+  @ContentType("application/json")
   @Get("/:id")
   @Summary("Get one ticket by ID")
   @Description("Returns an ticket with given ID from database.")
