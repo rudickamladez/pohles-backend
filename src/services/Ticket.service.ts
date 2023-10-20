@@ -3,7 +3,7 @@ import { BadRequest, Conflict, NotFound } from "@tsed/exceptions";
 import { MongooseModel } from "@tsed/mongoose";
 import moment from "moment";
 import { QRCode, QRSvg } from 'sexy-qr';
-import PDFDocument from 'pdfkit';
+import PDFDocument from 'pdfkit-table';
 import SVGtoPDF from 'svg-to-pdfkit';
 import * as fs from 'fs';
 import { TicketEasySchema, TicketModel, TicketUpdateModel } from "src/models/Ticket.model";
@@ -393,12 +393,6 @@ export class TicketService {
                 }
             },
             {
-                // sort
-                $sort: {
-                    'name.last': 1
-                }
-            },
-            {
                 $lookup: {
                     from: 'times',
                     localField: 'time', // from ticket
@@ -418,7 +412,66 @@ export class TicketService {
                     },
                 }
             },
+            {
+                // sort
+                $sort: {
+                    'tickets.name.last': 1
+                }
+            },
         ])
         return result
+    }
+
+    async pdfByTimes() {
+        let times = await this.groupByTimeinActiveYear();
+
+        // Create a document
+        const doc = new PDFDocument({ margin: 30, size: 'A4' });
+        doc.info['Title'] = `Tickets groupped by times - ${moment().format()}`;
+
+        async function fillDocumentWithPages() {
+            async function addPageWithTable(time: any) {
+
+                // Prepare data for the page
+                let data = [];
+                for (let ii = 0; ii < time.tickets.length; ii++) {
+                    const ticket = time.tickets[ii];
+                    data.push([ticket.name.last, ticket.name.first, ticket.email, ticket.status])
+                }
+
+                // Setup table
+                const table = {
+                    title: time.time[0].name,
+                    headers: ['Last name', 'First name', 'E-mail', 'Status'],
+                    rows: data,
+                };
+
+                // Draw table
+                await doc.table(
+                    table,
+                    {
+                        columnsSize: [150, 150, 150, 50]
+                    }
+                );
+            }
+
+            // One time is one page
+            for (let i = 0; i < times.length; i++) {
+                const time = times[i];
+                addPageWithTable(time);
+
+                // Add next page if there are some next times
+                if (i < (times.length - 1)) {
+                    await doc.addPage();
+                }
+            }
+            doc.end();
+        };
+
+        return new Promise((resolve, reject) => {
+            fillDocumentWithPages().then(() => {
+                resolve(doc.read());
+            })
+        });
     }
 }
