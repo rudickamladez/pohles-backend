@@ -94,6 +94,17 @@ export class TicketController {
   async getCSV() {
     return await this.ticketService.getCSV();
   }
+  
+  @Get("/export/pdf/by-times")
+  @Header("content-disposition", "attachment; filename=tickets-by-time.pdf")
+  @Summary("Get file to print tickets groupped by times in ACTIVE year.")
+  @Description("Returns file with list of this year tickets from database.")
+  @ContentType("application/pdf")
+  @Returns(200, Uint8Array)
+  @KeycloakAuth({ anyRole: ["realm:admin", "realm:ticket-editor", "realm:ticket-viewer"] })
+  async getPdfByTimes() {
+    return await this.ticketService.pdfByTimes();
+  }
 
   @ContentType("application/json")
   @Post("/mail/:id")
@@ -117,6 +128,15 @@ export class TicketController {
     @PathParams("id") id: string
   ) {
     return await this.ticketService.pay(id);
+  }
+
+  @ContentType("application/json")
+  @Get("/by-times")
+  @Summary("Get array of tickets groupped by time in ACTIVE year.")
+  @Description("Lorem Ipsum")
+  @Returns(200, Object)
+  async getFileForPrintByTimes() {
+    return this.ticketService.groupByTimeinActiveYear();
   }
 
   @ContentType("application/json")

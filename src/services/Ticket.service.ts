@@ -3,7 +3,7 @@ import { BadRequest, Conflict, NotFound } from "@tsed/exceptions";
 import { MongooseModel } from "@tsed/mongoose";
 import moment from "moment";
 import { QRCode, QRSvg } from 'sexy-qr';
-import PDFDocument from 'pdfkit';
+import PDFDocument from 'pdfkit-table';
 import SVGtoPDF from 'svg-to-pdfkit';
 import * as fs from 'fs';
 import { TicketEasySchema, TicketModel, TicketUpdateModel } from "src/models/Ticket.model";
@@ -12,6 +12,7 @@ import { NodemailerService } from "./Nodemailer.service";
 import { TimeService } from "./Time.service";
 import { WebSocketService } from "./web-socket.service";
 import { stringify } from 'csv-stringify/sync';
+import { YearService } from "./Year.service";
 const API_ENDPOINT = process.env["API_ENDPOINT"];
 
 @Injectable()
@@ -21,7 +22,8 @@ export class TicketService {
         @Inject(YearModel) private yearModel: MongooseModel<YearModel>,
         @Inject(TimeService) private timeService: TimeService,
         @Inject(NodemailerService) private nodemailerService: NodemailerService,
-        @Inject(WebSocketService) private wss: WebSocketService
+        @Inject(WebSocketService) private wss: WebSocketService,
+        @Inject(YearService) private yearService: YearService
     ) {
 
     }
@@ -133,8 +135,8 @@ export class TicketService {
 
         let doc = new this.model({
             name: {
-              first: obj.name.first.trim(),
-              last: obj.name.last.trim(),
+                first: obj.name.first.trim(),
+                last: obj.name.last.trim(),
             },
             email: obj.email.trim(),
             time: timeId,
@@ -276,13 +278,13 @@ export class TicketService {
 
         // Save document object to database
         await obj.save();
-        
+
         // Get document object from database
         let res = await obj.populate(["year", "time"])
-        
+
         // Send it thru websocket
         this.wss.broadcast("update-ticket", res);
-        
+
         //return to http client
         return res;
     }
@@ -329,7 +331,7 @@ export class TicketService {
 
         // Add headers before CSV data
         tickets.unshift(Object.keys(tickets[0]).reduce((a, v) => ({ ...a, [v]: v }), {}));
-        
+
         // Generate CSV
         const csvData = stringify(tickets);
 
@@ -362,7 +364,7 @@ export class TicketService {
         // Check given email and ticket email
         if (obj.email.toLowerCase() != email.toLocaleLowerCase()) {
             throw new BadRequest("User send bad email.");
-            
+
         }
 
         if (obj.status == 'cancelled') {
@@ -386,5 +388,101 @@ export class TicketService {
         this.wss.broadcast("update-ticket", res);
         this.wss.broadcast("cancelled-ticket", res);
         return res;
+    }
+
+    async groupByTimeinActiveYear() {
+        // Get active year
+        let year = await this.yearService.active();
+
+        let result = await this.model.aggregate([
+            {
+                // select
+                $match: {
+                    year: year?._id
+                }
+            },
+            {
+                $lookup: {
+                    from: 'times',
+                    localField: 'time', // from ticket
+                    foreignField: '_id', // from time
+                    as: 'related_time'
+                }
+            },
+            {
+                $group: {
+                    _id: '$time', // group by time from ticket
+                    time: {
+                        $first: '$related_time'
+                    },
+                    // create array of tickets
+                    tickets: {
+                        $push: '$$ROOT'
+                    },
+                }
+            },
+            {
+                // sort
+                $sort: {
+                    'tickets.name.last': 1
+                }
+            },
+        ])
+        return result
+    }
+
+    async pdfByTimes() {
+        let times = await this.groupByTimeinActiveYear();
+
+        // Create a document
+        const doc = new PDFDocument({ margin: 30, size: 'A4', font: 'Open Sans' });
+        doc.info['Title'] = `Tickets groupped by times - ${moment().format()}`;
+        // Embed a font, set the font size, and render some text
+        doc.font('fonts/OpenSans-VariableFont_wdth,wght.ttf');
+
+        async function fillDocumentWithPages() {
+            async function addPageWithTable(time: any) {
+
+                // Prepare data for the page
+                let data = [];
+                for (let ii = 0; ii < time.tickets.length; ii++) {
+                    const ticket = time.tickets[ii];
+                    data.push([ticket.name.last, ticket.name.first, ticket.email, ticket.status])
+                }
+
+                // Setup table
+                const table = {
+                    title: time.time[0].name,
+                    headers: ['Last name', 'First name', 'E-mail', 'Status'],
+                    rows: data,
+                };
+
+                // Draw table
+                await doc.table(
+                    table,
+                    {
+                        columnsSize: [150, 150, 150, 50]
+                    }
+                );
+            }
+
+            // One time is one page
+            for (let i = 0; i < times.length; i++) {
+                const time = times[i];
+                addPageWithTable(time);
+
+                // Add next page if there are some next times
+                if (i < (times.length - 1)) {
+                    await doc.addPage();
+                }
+            }
+            doc.end();
+        };
+
+        return new Promise((resolve, reject) => {
+            fillDocumentWithPages().then(() => {
+                resolve(doc.read());
+            })
+        });
     }
 }

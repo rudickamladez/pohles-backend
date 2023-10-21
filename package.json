@@ -44,7 +44,7 @@
     "moment": "^2.29.4",
     "mongoose": "^6.12.0",
     "nodemailer": "^6.9.6",
-    "pdfkit": "^0.13.0",
+    "pdfkit-table": "^0.1.99",
     "sexy-qr": "^0.3.2",
     "socket.io": "^4.7.2",
     "svg-to-pdfkit": "^0.1.8",
