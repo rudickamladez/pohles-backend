@@ -426,7 +426,7 @@ export class TicketService {
         let times = await this.groupByTimeinActiveYear();
 
         // Create a document
-        const doc = new PDFDocument({ margin: 30, size: 'A4' });
+        const doc = new PDFDocument({ margin: 30, size: 'A4', font: 'Open Sans' });
         doc.info['Title'] = `Tickets groupped by times - ${moment().format()}`;
         // Embed a font, set the font size, and render some text
         doc.font('fonts/OpenSans-VariableFont_wdth,wght.ttf');
