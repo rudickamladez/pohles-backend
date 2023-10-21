@@ -428,6 +428,8 @@ export class TicketService {
         // Create a document
         const doc = new PDFDocument({ margin: 30, size: 'A4' });
         doc.info['Title'] = `Tickets groupped by times - ${moment().format()}`;
+        // Embed a font, set the font size, and render some text
+        doc.font('fonts/OpenSans-VariableFont_wdth,wght.ttf');
 
         async function fillDocumentWithPages() {
             async function addPageWithTable(time: any) {
