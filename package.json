@@ -24,7 +24,7 @@
     "@types/compression": "^1.7.4",
     "@types/cookie-parser": "^1.4.4",
     "@types/express-session": "^1.17.8",
-    "@types/method-override": "^0.0.33",
+    "@types/method-override": "^0.0.34",
     "@types/nodemailer": "^6.4.13",
     "@types/pdfkit": "^0.13.1",
     "@types/svg-to-pdfkit": "^0.1.2",
