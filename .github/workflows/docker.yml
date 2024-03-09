@@ -43,17 +43,17 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          script: /tank/containers/deploy/pohles-api.sh
-  # deploy-dev:
-  #   runs-on: ubuntu-latest
-  #   if: github.ref != 'refs/heads/master'
-  #   environment: "dev"
-  #   steps:
-  #     - name: Execute deployment on SSH
-  #       uses: appleboy/ssh-action@v1.0.3
-  #       with:
-  #         host: ${{ secrets.SSH_HOST }}
-  #         username: ${{ secrets.SSH_USERNAME }}
-  #         key: ${{ secrets.SSH_KEY }}
-  #         port: ${{ secrets.SSH_PORT }}
-  #         script: /tank/containers/deploy/pohles-api-dev.sh ${{ github.head_ref || github.ref_name }}
+          script: /tank/containers/rm-devel-servers/obelix/pohles-backend/deploy.sh
+  deploy-dev:
+    runs-on: ubuntu-latest
+    if: github.ref != 'refs/heads/master'
+    environment: "dev"
+    steps:
+      - name: Execute deployment on SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: /tank/containers/deploy/pohles-api-dev.sh ${{ github.head_ref || github.ref_name }}
