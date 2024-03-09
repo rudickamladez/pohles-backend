@@ -43,7 +43,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          script: /tank/containers/rm-devel-servers/obelix/pohles-backend/deploy.sh
+          script: /mnt/md146g/rudickamladez/rm-devel-servers/obelix/pohles-backend/deploy.sh
   deploy-dev:
     runs-on: ubuntu-latest
     if: github.ref != 'refs/heads/master'
